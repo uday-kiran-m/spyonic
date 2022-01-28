@@ -19,7 +19,7 @@ import datetime
 #     print((x / psutil.cpu_count() )* 100 )
 # for proc in psutil.process_iter():
 #      print(proc)
-print(psutil.disk_partitions())
+# print(psutil.disk_partitions())
 # print(psutil.users())
 # print(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
 # print( psutil.net_if_addrs().keys())

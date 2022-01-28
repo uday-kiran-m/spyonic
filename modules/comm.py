@@ -3,7 +3,6 @@ import os, sys
 import logging
 import pickle
 
-
 class server:
 
     def get_ip_address(self):# this gives the ip of the interface which can communicate with internet
