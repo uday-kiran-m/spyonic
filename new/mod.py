@@ -6,6 +6,7 @@ import time
 import random
 from datetime import datetime
 import os, sys
+from nidhi import commands
 
 class server:
     def getip(): # get the local ip
@@ -51,7 +52,7 @@ class server:
                 mycon = mysql.connector.connect(host='localhost',user='spyonic',password='Spyonic@123')
                 mycurs = mycon.cursor()
                 mycurs.execute('create database if not exists spyonic')
-                mycurs.execute("create table if not exists spyonic.admins(id char(6) not NULL,status int default 0,email varchar(100) not NULL primary key,device_no int,subscription int not NULL default 0,validity date)")
+                mycurs.execute("create table if not exists spyonic.admins(id char(6) not NULL,status int default 0,email varchar(100) not NULL primary key,device_no int,subscription int not NULL default 0,validity date,password varchar(20))")
                 mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default client, os varchar(10),last_online DATETIME,email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
                 mycurs.close()
                 mycon.close()
@@ -115,7 +116,6 @@ class server:
             admin.close()
             del self.admins[id]
 
-
     def accepter(self):
         while self.status:
             try:
@@ -153,17 +153,33 @@ class server:
                 data = pickle.loads(cli.recv(2048))
                 if data['type'] == 'admin':
                     x = ['idk']
-                    while x != []:
-                        id = random.randint(100000,999999)
-                        x = self.execdb(f"select * from spyonic.admins where id = '{id}'")
-                    y = self.execdb(f"select * from spyonic.admins where email='f{data['email']}'")
-                    if y == []:
-                        self.execdb(f"insert into spyonic.admins values('{id}',0,'{data['email']}',0,0,NULL)")
-                        cli.send(pickle.dumps([True,'granted',id]))
-                        cli.close()
-                    else:
-                        cli.send(pickle.dumps([False,'Email in use']))
-                        cli.close()
+                    if data['user'] == 'register':
+                        while x != []:
+                            id = random.randint(100000,999999)
+                            x = self.execdb(f"select * from spyonic.admins where id = '{id}'")
+                        y = self.execdb(f"select * from spyonic.admins where email='f{data['email']}'")
+                        if y == []:
+                            self.execdb(f"insert into spyonic.admins values('{id}',0,'{data['email']}',0,0,NULL,'{data['password']}')")
+                            cli.send(pickle.dumps([True,'granted',id]))
+                            cli.close()
+                        else:
+                            cli.send(pickle.dumps([False,'Email in use']))
+                            cli.close()
+                    elif data['user'] == 'login':
+                        passwd = self.execdb(f"select password from spyonic.admins where email = '{data['email']}'")
+                        if passwd != []:
+                            if passwd[0] == data['password']:
+                                id = self.execdb(f"select id from spyonic.admins where email = {data['email']}")[0]
+                                cli.send(pickle.dumps({'id':id,'error':None}))
+                                cli.close()
+                            else:
+                                cli.send(pickle.dumps({'id':None,'error':'Incorrect Password'}))
+                                cli.close()
+                        else:
+                            cli.send(pickle.dumps({'id':None,'error':'No email found'}))
+                            cli.close()
+
+
                 elif data['type'] == 'client':
                     x = ['idk']
                     while x != []:
@@ -186,6 +202,8 @@ class server:
     def start(self):
         print('starting serv')
         self.setupserv()
+        print('IP:',self.ip)
+        print('PORT:',self.port)
         t = threading.Thread(target=self.accepter,daemon=True)
         t.start()
         while self.status:
@@ -205,6 +223,7 @@ class client:
         self.ip = ip
         self.port = 6000
         self.instport = self.port-1
+        self.commands = commands()
 
     def loadinfo(self):
         try:
@@ -216,6 +235,46 @@ class client:
 
         except:
             self.installed = False
+    
+    def is_installed(self):
+        self.loadinfo()
+        return self.installed
+
+    def install(self,email,passwd):
+        self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server.connect((self.ip,self.instport))
+        data = self.server.recv(1024).decode()
+        if data == 'namex':
+            # with open('temp.dat','wb') as f:
+            #     data = pickle.load(f)
+            #     self.email = data['email']
+            self.server.send(pickle.dumps({'type':'admin','email':email,'user':'register','password':passwd}))
+            data = pickle.loads(self.server.recv(2048))
+            if data['id'] != None:
+                with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
+                    pickle.dump({'id':data['id'],'email':email})
+                    return True
+            else:
+                return data['error']
+    
+    def login(self,email,passwd):
+        self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server.connect((self.ip,self.instport))
+        data = self.server.recv(1024).decode()
+        if data == 'namex':
+            # with open('temp.dat','wb') as f:
+            #     data = pickle.load(f)
+            #     self.email = data['email']
+            self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd}))
+            data = pickle.loads(self.server.recv(2048))
+            if data['id'] != None:
+                with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
+                    pickle.dump({'id':data['id'],'email':email})
+                    return True
+            else:
+                return data['error']
+
+        
     def setconn(self):
         try:
             if self.installed:
@@ -242,11 +301,42 @@ class client:
 
         except:
             return False
+
+    def reciever(self,ev):
+        while not ev.is_set():
+            data = pickle.loads(self.server.recv(2048))
+            if len(data) != 0:
+                if data['command']=='status':
+                    self.server.send(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
+                elif data['command']=='history':
+                    self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.bhistory()}))
+                elif data['command']=='listprocess':
+                    self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.running_process()}))
+                else:
+                    pass
+
+    def start(self):
+        self.loadinfo()
+        if self.installed:
+            status = self.setconn
+            if status:
+                self.ev = threading.Event()
+                self.connected = True
+                t = threading.Thread(target=self.reciever,args=(self.ev,))
+                t.start()
+            else:
+                print('cant connect')
+
+    def stop(self):
+        self.ev.set()
+
+
 class admin:
     def __init__(self,ip) -> None:
         self.ip = ip
         self.port = 6000
         self.instport = self.port-1
+        self.connected = False
 
     def loadinfo(self):
         try:
@@ -258,6 +348,28 @@ class admin:
 
         except:
             self.installed = False
+
+    def is_installed(self):
+        self.loadinfo()
+        return self.installed
+
+    def install(self,email):
+        self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server.connect((self.ip,self.instport))
+        data = self.server.recv(1024).decode()
+        if data == 'namex':
+            # with open('temp.dat','wb') as f:
+            #     data = pickle.load(f)
+            #     self.email = data['email']
+            self.server.send(pickle.dumps({'type':'admin','email':email}))
+            data = pickle.loads(self.server.recv(2048))
+            if data['id'] != None:
+                with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
+                    pickle.dump({'id':data['id'],'email':email})
+                    return True
+            else:
+                return data['error']
+    
     def setconn(self):
         try:
             if self.installed:
@@ -265,23 +377,33 @@ class admin:
                 self.server.connect((self.ip,self.port))
                 data = self.server.recv(1024).decode()
                 if data == 'namex':
-                    self.server.send(pickle.dumps({'id':self.id,'type':'client'}))
+                    self.server.send(pickle.dumps({'id':self.id,'type':'admin'}))
                     if self.server.recv(1024).decode == ' granted':
                         return True
             else:
-                self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                self.server.connect((self.ip,self.instport))
-                data = self.server.recv(1024).decode()
-                if data == 'namex':
-                    self.server.send(pickle.dumps({'type':'client','email':'email'}))
-                    data = pickle.loads(self.server.recv(2048))
-                    if data['id'] != None:
-                        with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
-                            pickle.dump({'id':data['id'],'email':'email'})
-                            return True
-                    else:
-                        return data['error']
+                print('Installation Error')
 
         except:
             return False
-server().start()
+
+    def sender(self,id,command,data=None):
+        self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
+        data = pickle.loads(self.server.recv(2048))
+        if len(data) != 0:
+            return data
+
+    def start(self):
+        self.loadinfo()
+        if self.installed:
+            status = self.setconn
+            if status:
+                self.connected = True
+            else:
+                print('cant connect')
+
+    def stop(self):
+        self.server.close()
+
+
+
+
