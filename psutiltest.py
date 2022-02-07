@@ -8,6 +8,7 @@ import datetime
 # print(psutil.disk_partitions())
 # for i in psutil.net_connections('inet4'):
 #     if i.status != None:
+#         print(i)
 #         if len(i.raddr) !=0:
 #             print(i.raddr)
 # print(psutil.net_if_addrs().keys())

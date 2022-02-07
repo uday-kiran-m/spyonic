@@ -16,11 +16,8 @@ def func():
     else:
         return
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(("8.8.8.8", 80))
-ip = s.getsockname()[0]
-s.close()
+
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
-eel.spawn(func)
-eel.start('index.html',host=ip)
+eel.start('idk/index.html',jinja_templates='idk')
+
