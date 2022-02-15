@@ -28,6 +28,7 @@ class server:
         self.dbstatus = True
 
     def execdb(self,arg):# set up mysql connection
+        print(f'Executing:{arg}')
         while not self.dbstatus:
             time.sleep(0.2)
         else:
@@ -42,18 +43,22 @@ class server:
                     mycon.close()
                     self.dbstatus = True
                     return data
-                except:
+                except Exception as e:
                     mycurs.close()
                     mycon.close()
                     self.dbstatus = True
-                    print('mysqlerror')
+                    print('mysqlerror',e)
                     self.stop()
             except:
+                print('fixing db')
                 mycon = mysql.connector.connect(host='localhost',user='spyonic',password='Spyonic@123')
                 mycurs = mycon.cursor()
                 mycurs.execute('create database if not exists spyonic')
+                print('created database')
                 mycurs.execute("create table if not exists spyonic.admins(id char(6) not NULL,status int default 0,email varchar(100) not NULL primary key,device_no int,subscription int not NULL default 0,validity date,password varchar(20))")
+                print('.')
                 mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default client, os varchar(10),last_online DATETIME,email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
+                print('created tables')
                 mycurs.close()
                 mycon.close()
                 self.dbstatus = True
@@ -66,7 +71,9 @@ class server:
         self.execdb(f"update table spyonic.admins set status={status} where id = {adminid}")
 
     def setupserv(self):
+        print('init conn')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # self.instserver = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.bind((self.ip,self.port))
         # self.instserver.bind((self.ip,self.instport))
@@ -173,7 +180,14 @@ class server:
                             if passwd[0] == data['password']:
                                 id = self.execdb(f"select id from spyonic.admins where email = {data['email']}")[0]
                                 cli.send(pickle.dumps({'id':id,'error':None}))
-                                cli.close()
+                                self.change_admin_status(data['id'],1)
+                                adm_ev = threading.Event()
+                                t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev]))
+                                t.start()
+                                # self.server.send('granted'.encode())
+                                print(f"Admin connected\nIP:{addr},email:{data['email']}")
+                                self.admins[data['id']] = cli
+                                # cli.close()
                             else:
                                 cli.send(pickle.dumps({'id':None,'error':'Incorrect Password'}))
                                 cli.close()
@@ -192,7 +206,14 @@ class server:
                         self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
                         cli.send(pickle.dumps({'error':None,'id':id}))
                         self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
-                        cli.close()
+                        self.change_client_status(data['id'],1)
+                        cli_ev = threading.Event()
+                        t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
+                        t.start()
+                        self.server.send('granted'.encode())
+                        print(f"client connected\nIP:{addr},email:{data['email']}")
+                        self.clients[data['id']] = cli
+                        # cli.close()
                     else:
                         cli.send(pickle.dumps({'error':'Email in use','id':None}))
                         cli.close()
@@ -228,6 +249,7 @@ class client:
         self.commands = commands()
 
     def loadinfo(self):
+        print('loading info')
         try:
             with open(os.path.join(sys.argv[0],'data.dat'),'rb') as f:
                 data = pickle.load(f)
@@ -243,6 +265,7 @@ class client:
         return self.installed
 
     def register(self,email,passwd):
+        print('registering')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
         data = self.server.recv(1024).decode()
@@ -260,6 +283,7 @@ class client:
                 return data['error']
 
     def login(self,email,passwd):
+        print('logging in')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
         data = self.server.recv(1024).decode()
@@ -269,6 +293,7 @@ class client:
             #     self.email = data['email']
             self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd}))
             data = pickle.loads(self.server.recv(2048))
+            print(data)
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
                 #     pickle.dump({'id':data['id'],'email':email})
@@ -277,6 +302,7 @@ class client:
                 return data['error']
       
     def setconn(self):
+        print('init conn')
         try:
             if self.installed:
                 self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -319,6 +345,7 @@ class client:
                     pass
 
     def start(self):
+        print('starting')
         self.loadinfo()
         if self.installed:
             status = self.setconn
@@ -342,6 +369,7 @@ class admin:
         self.connected = False
 
     def loadinfo(self):
+        print('loading info')
         try:
             with open(os.path.join(sys.argv[0],'data.dat'),'rb') as f:
                 data = pickle.load(f)
@@ -376,6 +404,7 @@ class admin:
                 return data['error']
                 
     def login(self,email,passwd):
+        print('logging in')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
         data = self.server.recv(1024).decode()
@@ -393,6 +422,7 @@ class admin:
                 return data['error']
        
     def setconn(self):
+        print('init conn')
         try:
             if self.installed:
                 self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -415,6 +445,7 @@ class admin:
             return data
 
     def start(self):
+        print('Starting ')
         self.loadinfo()
         if self.installed:
             status = self.setconn

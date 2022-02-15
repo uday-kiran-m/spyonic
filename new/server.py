@@ -1,4 +1,5 @@
 from mod import server
 
-serv = server()
+ip = input("Enter IP: ")
+serv = server(ip)
 serv.start()
