@@ -4,19 +4,20 @@ import os,sys
 
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
-adm = admin('127.0.0.1')
+ip = input("Enter IP address of the server:")
+adm = admin(ip)
 
-@eel.expose
-def register(username,passwd):
-    print('registering')
-    pass
+# @eel.expose
+# def register(username,passwd):
+#     print('registering')
+#     return 1
 
-@eel.expose
-def login(username,passwd):
-    print('logging in')
-    pass
+# @eel.expose
+# def login(username,passwd):
+#     print('logging in')
+#     return 1
 
 if adm.is_installed():
     eel.start('html/index.html',jinja_templates = 'html')
 else:
-    eel.start('html/home.html',jinja_templates = 'html')
+    eel.start('html/home.html',jinja_templates = 'html',mode=None)

@@ -2,9 +2,10 @@ from mod import client
 import eel
 
 email = input("Enter email: ")
-cli = client()
+ip = input('Enter server IP:')
+cli = client(ip)
 if cli.is_installed():
     cli.start()
 else:
-    cli.install(email)
+    cli.login(email,'idk')
     cli.start()
