@@ -400,7 +400,7 @@ class admin:
             self.server.send(pickle.dumps({'type':'admin','email':email,'user':'register','password':passwd}))
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
-                with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
+                with open(sys.argv[0]+'data.dat','wb') as f:
                     pickle.dump({'id':data['id'],'email':email})
                     print('registered')
                     return True
