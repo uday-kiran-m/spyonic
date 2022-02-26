@@ -1,10 +1,11 @@
 from mod import admin
 import eel
 import os,sys
-print(sys.argv)
+# print(sys.argv)
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
 ip = input("Enter IP address of the server:")
+email = input('enter email: ')
 adm = admin(ip)
 
 # @eel.expose
@@ -18,6 +19,9 @@ adm = admin(ip)
 #     return 1
 
 if adm.is_installed():
-    eel.start('html/index.html',jinja_templates = 'html')
+    # eel.start('html/index.html',jinja_templates = 'html')
+    adm.login(email,'123')
+    adm.start()
 else:
+    adm.register(email,'123')
     eel.start('html/home.html',jinja_templates = 'html',mode=None)

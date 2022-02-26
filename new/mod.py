@@ -217,6 +217,7 @@ class server:
                         # cli.close()
                     else:
                         cli.send(pickle.dumps({'error':'Email in use','id':None}))
+                        print('closed client')
                         cli.close()
                 else:
                     cli.close()
