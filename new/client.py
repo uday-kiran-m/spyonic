@@ -4,7 +4,8 @@ import eel
 email = input("Enter email: ")
 ip = input('Enter server IP:')
 cli = client(ip)
-if cli.is_installed():
+if not cli.is_installed():
+    cli.register()
     cli.start()
 else:
     cli.login(email,'idk')

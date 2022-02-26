@@ -202,6 +202,7 @@ class server:
                         id = random.randint(100000,999999)
                         x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
                     y = self.execdb(f"select id from spyonic.admins where email='f{data['email']}'")
+                    print(x,y)
                     if y != []:
                         self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
                         cli.send(pickle.dumps({'error':None,'id':id}))
