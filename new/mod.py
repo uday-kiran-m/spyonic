@@ -276,7 +276,9 @@ class client:
             #     data = pickle.load(f)
             #     self.email = data['email']
             self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd}))
+            print('sent request')
             data = pickle.loads(self.server.recv(2048))
+            print('recieved:',data)
             if data['id'] != None:
                 with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
                     pickle.dump({'id':data['id'],'email':email})
