@@ -1,7 +1,7 @@
 from mod import admin
 import eel
 import os,sys
-
+print(sys.argv)
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
 ip = input("Enter IP address of the server:")

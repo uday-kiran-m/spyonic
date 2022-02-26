@@ -34,7 +34,7 @@ class server:
         else:
             self.dbstatus = False
             try:
-                mycon = mysql.connector.connect(host='localhost',database='spyonic',user='spyonic',password='Spyonic@123')
+                mycon = mysql.connector.connect(host='localhost',database='spyonic',user='root',password='root')
                 mycurs = mycon.cursor()
                 try:
                     mycurs.execute(arg)
@@ -46,18 +46,18 @@ class server:
                 except Exception as e:
                     mycurs.close()
                     mycon.close()
-                    self.dbstatus = True
+                    self.dbstatus = False
                     print('mysqlerror',e)
                     self.stop()
             except:
                 print('fixing db')
-                mycon = mysql.connector.connect(host='localhost',user='spyonic',password='Spyonic@123')
+                mycon = mysql.connector.connect(host='localhost',user='root',password='root')
                 mycurs = mycon.cursor()
                 mycurs.execute('create database if not exists spyonic')
                 print('created database')
                 mycurs.execute("create table if not exists spyonic.admins(id char(6) not NULL,status int default 0,email varchar(100) not NULL primary key,device_no int,subscription int not NULL default 0,validity date,password varchar(20))")
                 print('.')
-                mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default client, os varchar(10),last_online DATETIME,email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
+                mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default 'client', os varchar(10),last_online DATETIME,email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
                 print('created tables')
                 mycurs.close()
                 mycon.close()
@@ -200,7 +200,7 @@ class server:
                     x = ['idk']
                     while x != []:
                         id = random.randint(100000,999999)
-                        x = self.execdb(f"select * from spyonic.clients where id = '{id}'")
+                        x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
                     y = self.execdb(f"select id from spyonic.admins where email='f{data['email']}'")
                     if y != []:
                         self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
