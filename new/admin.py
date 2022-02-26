@@ -24,4 +24,5 @@ if adm.is_installed():
     adm.start()
 else:
     adm.register(email,'123')
-    eel.start('html/home.html',jinja_templates = 'html',mode=None)
+    adm.start()
+    # eel.start('html/home.html',jinja_templates = 'html',mode=None)
