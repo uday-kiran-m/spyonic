@@ -281,7 +281,7 @@ class client:
             print('recieved:',data)
             if data['id'] != None:
                 with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
-                    pickle.dump({'id':data['id'],'email':email})
+                    pickle.dump({'id':data['id'],'email':email},f)
                     return True
             else:
                 return data['error']
@@ -401,7 +401,7 @@ class admin:
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 with open(sys.argv[0]+'data.dat','wb') as f:
-                    pickle.dump({'id':data['id'],'email':email})
+                    pickle.dump({'id':data['id'],'email':email},f)
                     print('registered')
                     return True
             else:
