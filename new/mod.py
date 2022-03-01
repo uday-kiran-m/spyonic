@@ -67,7 +67,7 @@ class server:
                 return self.execdb(arg)
 
     def change_client_status(self,clientid,status):
-        self.execdb(f"update table spyonic.clients set status={status} where id = {clientid}")
+        self.execdb(f"update spyonic.clients set status={status} where id = {clientid}")
 
     def change_admin_status(self,adminid,status):
         self.execdb(f"update spyonic.admins set status={status} where id = {adminid}")
@@ -96,7 +96,7 @@ class server:
                     ev.set()
         else:
             self.change_client_status(id,0)
-            self.execdb(f"update table spyonic.clients set last_online = '{datetime.today().strftime('%Y-%m-%d')}' where id = {id}")
+            self.execdb(f"update spyonic.clients set last_online = '{datetime.today().strftime('%Y-%m-%d')}' where id = {id}")
             client.close()
             del self.clients[id]
 
@@ -220,16 +220,19 @@ class server:
                         if y != []:
                             y = y[0]
                             print(y)
-                            self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['password']}','{data['email']}')")
+                            self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['name']}','{data['os']}',NULL,'{data['password']}','{data['email']}')")
                             cli.send(pickle.dumps({'error':None,'id':id}))
-                            self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
+                            self.execdb(f"update spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
+                            # print('hmm')
+                            cli.close()
+                            '''
                             self.change_client_status(data['id'],1)
                             cli_ev = threading.Event()
-                            t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
+                            t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev))
                             t.start()
                             self.server.send('granted'.encode())
                             print(f"client connected\nIP:{addr},email:{data['email']}")
-                            self.clients[data['id']] = cli
+                            self.clients[data['id']] = cli'''
                             # cli.close()
                         else:
                             cli.send(pickle.dumps({'error':'Email in use','id':None}))
@@ -372,7 +375,9 @@ class client:
 
     def reciever(self,ev):
         while not ev.is_set():
-            data = pickle.loads(self.server.recv(2048))
+            data = self.server.recv(2048)
+            if data != b'':
+                data = pickle.loads(data)
             if len(data) != 0:
                 if data['command']=='status':
                     self.server.send(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
