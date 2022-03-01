@@ -179,12 +179,18 @@ class server:
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.admins where email = '{data['email']}'")
                         if passwd != []:
-                            if passwd[0] == data['password']:
-                                id = self.execdb(f"select id from spyonic.admins where email = {data['email']}")[0]
+                            print(passwd)
+                            if passwd[0][0] == data['password']:
+                                id = self.execdb(f"select id from spyonic.admins where email = '{data['email']}'")[0][0]
+                                print(id)
                                 cli.send(pickle.dumps({'id':id,'error':None}))
-                                self.change_admin_status(data['id'],1)
+                                print('sent')
+                                # self.change_admin_status(data['id'],1)
                                 adm_ev = threading.Event()
-                                t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev]))
+                                print('created ev')
+                                print(data)
+                                t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev],),daemon=True)
+                                print('starting t')
                                 t.start()
                                 # self.server.send('granted'.encode())
                                 print(f"Admin connected\nIP:{addr},email:{data['email']}")
@@ -420,7 +426,7 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd}))
+            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id}))
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
