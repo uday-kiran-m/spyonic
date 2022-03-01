@@ -392,7 +392,7 @@ class client:
         print('starting')
         self.loadinfo()
         if self.installed:
-            status = self.setconn
+            status = self.setconn()
             if status:
                 self.ev = threading.Event()
                 self.connected = True
