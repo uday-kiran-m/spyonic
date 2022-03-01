@@ -4,8 +4,10 @@ import os,sys
 # print(sys.argv)
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
-ip = input("Enter IP address of the server:")
-email = input('enter email: ')
+# ip = input("Enter IP address of the server:")
+ip = '25.41.20.120'
+# email = input('enter email: ')
+email = 'test'
 adm = admin(ip)
 
 # @eel.expose
