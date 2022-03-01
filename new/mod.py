@@ -318,7 +318,7 @@ class client:
                     if self.server.recv(1024).decode == ' granted':
                         return True
             else:
-                # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)#
                 # self.server.connect((self.ip,self.instport))
                 # data = self.server.recv(1024).decode()
                 # if data == 'namex':
