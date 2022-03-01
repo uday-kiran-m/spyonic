@@ -70,7 +70,7 @@ class server:
         self.execdb(f"update table spyonic.clients set status={status} where id = {clientid}")
 
     def change_admin_status(self,adminid,status):
-        self.execdb(f"update table spyonic.admins set status={status} where id = {adminid}")
+        self.execdb(f"update spyonic.admins set status={status} where id = {adminid}")
 
     def setupserv(self):
         print('init conn')
@@ -103,7 +103,10 @@ class server:
     def adminlistener(self,id,admin,ev):
         while not ev.is_set():
             try:
-                data = pickle.loads(admin.recv(2048))
+                data = admin.recv(4096)
+                # print(data)
+                if data != b'':
+                    data = pickle.loads(data)
                 if type(data) == dict:
                         if data['command'] == 'sendclient':
                             if data['id'] in self.clients:
@@ -118,43 +121,44 @@ class server:
                                 admin.send(pickle.dumps(clidata))
                             else:
                                 pass
-            except:
+            except Exception as e:
+                print(e)
                 ev.set()
         else:
             self.change_admin_status(id,0)
             admin.close()
             del self.admins[id]
 
-    # def accepter(self):
-    #     while self.status:
-    #         try:
-    #             cli , addr = self.server.accept()
-    #             cli.send('namex'.encode())
-    #             data = pickle.loads(cli.recv(2048))
-    #             if data['type'] == 'admin':
-    #                 x = self.execdb(f"select * from spyonic.admins where id = '{data['id']}'")
-    #                 if x != []:
-    #                     self.change_admin_status(data['id'],1)
-    #                     adm_ev = threading.Event()
-    #                     t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev]))
-    #                     t.start()
-    #                     self.server.send('granted'.encode())
-    #                     print(f"Admin connected\nIP:{addr},email:{data['email']}")
-    #                     self.admins[data['id']] = cli
-    #             elif data['type'] == 'client':
-    #                 x = self.execdb(f"select * from spyonic.client where id = '{data['id']}'")
-    #                 if x != []:
-    #                     self.change_client_status(data['id'],1)
-    #                     cli_ev = threading.Event()
-    #                     t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
-    #                     t.start()
-    #                     self.server.send('granted'.encode())
-    #                     print(f"client connected\nIP:{addr},email:{data['email']}")
-    #                     self.clients[data['id']] = cli
-    #             else:
-    #                 cli.close()
-    #         except:
-    #             pass
+    def accepterold(self):
+        while self.status:
+            try:
+                cli , addr = self.server.accept()
+                cli.send('namex'.encode())
+                data = pickle.loads(cli.recv(2048))
+                if data['type'] == 'admin':
+                    x = self.execdb(f"select * from spyonic.admins where id = '{data['id']}'")
+                    if x != []:
+                        self.change_admin_status(data['id'],1)
+                        adm_ev = threading.Event()
+                        t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev]))
+                        t.start()
+                        self.server.send('granted'.encode())
+                        print(f"Admin connected\nIP:{addr},email:{data['email']}")
+                        self.admins[data['id']] = cli
+                elif data['type'] == 'client':
+                    x = self.execdb(f"select * from spyonic.client where id = '{data['id']}'")
+                    if x != []:
+                        self.change_client_status(data['id'],1)
+                        cli_ev = threading.Event()
+                        t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
+                        t.start()
+                        self.server.send('granted'.encode())
+                        print(f"client connected\nIP:{addr},email:{data['email']}")
+                        self.clients[data['id']] = cli
+                else:
+                    cli.close()
+            except:
+                pass
 
     def accepter(self):
         while self.status:
@@ -185,11 +189,11 @@ class server:
                                 print(id)
                                 cli.send(pickle.dumps({'id':id,'error':None}))
                                 print('sent')
-                                # self.change_admin_status(data['id'],1)
+                                self.change_admin_status(data['id'],1)
                                 adm_ev = threading.Event()
                                 print('created ev')
                                 print(data)
-                                t = threading.Thread(target=self.adminlistener,args=(data['id',cli,adm_ev],),daemon=True)
+                                t = threading.Thread(target=self.adminlistener,args=(data['id'],cli,adm_ev),daemon=True)
                                 print('starting t')
                                 t.start()
                                 # self.server.send('granted'.encode())
@@ -209,8 +213,9 @@ class server:
                     while x != []:
                         id = random.randint(100000,999999)
                         x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
-                    y = self.execdb(f"select id from spyonic.admins where email='f{data['email']}'")
+                    y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")[0]
                     print(x,y)
+                    print(data)
                     if y != []:
                         self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
                         cli.send(pickle.dumps({'error':None,'id':id}))
@@ -283,7 +288,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'id':self.id}))
             print('sent request')
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
@@ -426,7 +431,7 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id}))
+            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id,'os':os.name}))
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
