@@ -375,6 +375,7 @@ class admin:
     def loadinfo(self):
         print('loading info')
         try:
+            print(os.path.join(sys.argv[0],'data.dat') )
             with open(os.path.join(sys.argv[0],'data.dat'),'rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
@@ -403,7 +404,7 @@ class admin:
                 with open(sys.argv[0]+'data.dat','wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
                     print('registered')
-                    return True
+                return True
             else:
                 return data['error']
                 
