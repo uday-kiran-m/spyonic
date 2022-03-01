@@ -319,7 +319,7 @@ class client:
                         return True
             else:
                 # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)#
-                # self.server.connect((self.ip,self.instport))
+                # self.server.connect((self.ip,self.instport)) 
                 # data = self.server.recv(1024).decode()
                 # if data == 'namex':
                 #     self.server.send(pickle.dumps({'type':'client','email':'email'}))
@@ -377,6 +377,7 @@ class admin:
         print('loading info')
         try:
             # print(os.path.join(sys.argv[0],'data.dat'))
+            print(sys.argv[0],'/data.dat')
             with open(sys.argv[0],'/data.dat','rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
