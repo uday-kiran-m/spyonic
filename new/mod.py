@@ -59,7 +59,7 @@ class server:
                 print('created database')
                 mycurs.execute("create table if not exists spyonic.admins(id char(6) not NULL,status int default 0,email varchar(100) not NULL primary key,device_no int,subscription int not NULL default 0,validity date,password varchar(20))")
                 print('.')
-                mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default 'client', os varchar(10),last_online DATETIME,email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
+                mycurs.execute("create table if not exists spyonic.clients(id char(6) primary key not NULL, status int default 0,name varchar(20) default 'client', os varchar(10),last_online DATETIME,password varchar(20),email varchar(100) not NULL, FOREIGN KEY (email) REFERENCES spyonic.admins(email) ON DELETE CASCADE )")
                 print('created tables')
                 mycurs.close()
                 mycon.close()
@@ -209,29 +209,48 @@ class server:
 
 
                 elif data['type'] == 'client':
-                    x = ['idk']
-                    while x != []:
-                        id = random.randint(100000,999999)
-                        x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
-                    y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")[0]
-                    print(x,y)
-                    print(data)
-                    if y != []:
-                        self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
-                        cli.send(pickle.dumps({'error':None,'id':id}))
-                        self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
-                        self.change_client_status(data['id'],1)
-                        cli_ev = threading.Event()
-                        t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
-                        t.start()
-                        self.server.send('granted'.encode())
-                        print(f"client connected\nIP:{addr},email:{data['email']}")
-                        self.clients[data['id']] = cli
-                        # cli.close()
-                    else:
-                        cli.send(pickle.dumps({'error':'Email in use','id':None}))
-                        print('closed client')
-                        cli.close()
+                    if data['user']=='register':
+                        x = ['idk']
+                        while x != []:
+                            id = random.randint(100000,999999)
+                            x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
+                        y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")[0]
+                        print(x,y)
+                        print(data)
+                        if y != []:
+                            self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
+                            cli.send(pickle.dumps({'error':None,'id':id}))
+                            self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
+                            self.change_client_status(data['id'],1)
+                            cli_ev = threading.Event()
+                            t = threading.Thread(target=self.clilistener,args=(data['id',cli,cli_ev]))
+                            t.start()
+                            self.server.send('granted'.encode())
+                            print(f"client connected\nIP:{addr},email:{data['email']}")
+                            self.clients[data['id']] = cli
+                            # cli.close()
+                        else:
+                            cli.send(pickle.dumps({'error':'Email in use','id':None}))
+                            print('closed client')
+                            cli.close()
+                    elif data['user'] == 'login':
+                        passwd = self.execdb(f"select password from spyonic.clients where id = '{data['id']}'")[0]
+                        if passwd[0] == data['password']:
+                            cli.send(pickle.dumps({'id':id,'error':None}))
+                            print('sent')
+                            self.change_client_status(data['id'],1)
+                            cli_ev = threading.Event()
+                            print('created ev')
+                            print(data)
+                            t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev),daemon=True)
+                            print('starting t')
+                            t.start()
+                                # self.server.send('granted'.encode())
+                            print(f"Client connected\nIP:{addr},email:{data['email']}")
+                            self.clients[data['id']] = cli
+
+                        
+                    
                 else:
                     cli.close()
             except:
@@ -295,7 +314,7 @@ class client:
             if data['id'] != None:
                 with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
-                    return True
+                return True
             else:
                 return data['error']
 
