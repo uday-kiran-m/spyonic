@@ -214,10 +214,12 @@ class server:
                         while x != []:
                             id = random.randint(100000,999999)
                             x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
-                        y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")[0]
+                        y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")
                         print(x,y)
                         print(data)
                         if y != []:
+                            y = y[0]
+                            print(y)
                             self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
                             cli.send(pickle.dumps({'error':None,'id':id}))
                             self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
@@ -307,7 +309,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'id':self.id}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':os.name}))
             print('sent request')
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
@@ -327,7 +329,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd,'os':os.name,'id':self.id}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd,'id':self.id}))
             data = pickle.loads(self.server.recv(2048))
             print(data)
             if data['id'] != None:
