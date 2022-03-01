@@ -308,7 +308,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd,'os':os.name,'id':self.id}))
             data = pickle.loads(self.server.recv(2048))
             print(data)
             if data['id'] != None:
@@ -431,7 +431,7 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id,'os':os.name}))
+            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id}))
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
