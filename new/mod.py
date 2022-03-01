@@ -240,7 +240,11 @@ class server:
                             cli.close()
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.clients where id = '{data['id']}'")[0]
+                        print(passwd)
+                        print(data['password'])
+                        print(passwd[0]==data['password'])
                         if passwd[0] == data['password']:
+                            print('passwd accepted')
                             cli.send(pickle.dumps({'id':id,'error':None}))
                             print('sent')
                             self.change_client_status(data['id'],1)
@@ -253,6 +257,10 @@ class server:
                                 # self.server.send('granted'.encode())
                             print(f"Client connected\nIP:{addr},email:{data['email']}")
                             self.clients[data['id']] = cli
+                        else:
+                            cli.send(pickle.dumps({'id':None,'error':'incorrect statement'}))
+                            cli.close()
+
 
                         
                     

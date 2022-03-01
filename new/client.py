@@ -10,5 +10,8 @@ if not cli.is_installed():
     cli.register(email,'123')
     cli.start()
 else:
-    cli.login(email,'idk')
-    cli.start()
+    x = cli.login(email,'idk')
+    if x != True:
+        cli.start()
+    else:
+        print(x['error'])
