@@ -6,6 +6,7 @@ import time
 import random
 from datetime import datetime
 import sys
+import os
 from nidhi import commands
 
 class server:
@@ -254,7 +255,7 @@ class client:
     def loadinfo(self):
         print('loading info')
         try:
-            with open(sys.argv[0].strip()+'/data.dat','rb') as f:
+            with open(os.path.join(os.path.dirname(__file__),'data.dat'),'rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
@@ -281,7 +282,7 @@ class client:
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
             if data['id'] != None:
-                with open(sys.argv[0].strip()+'/data.dat','wb') as f:
+                with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
                     return True
             else:
@@ -377,8 +378,8 @@ class admin:
         print('loading info')
         try:
             # print(os.path.join(sys.argv[0].strip()+'data.dat'))
-            print(sys.argv[0].strip()+'/data.dat')
-            with open(sys.argv[0].strip()+'/data.dat','rb') as f:
+            print(os.path.join(os.path.dirname(__file__),'data.dat'))
+            with open(os.path.join(os.path.dirname(__file__),'data.dat'),'rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
@@ -403,7 +404,7 @@ class admin:
             self.server.send(pickle.dumps({'type':'admin','email':email,'user':'register','password':passwd}))
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
-                with open(sys.argv[0].strip()+'data.dat','wb') as f:
+                with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
                     print('registered')
                 return True
