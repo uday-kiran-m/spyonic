@@ -168,7 +168,7 @@ class server:
                         while x != []:
                             id = random.randint(100000,999999)
                             x = self.execdb(f"select * from spyonic.admins where id = '{id}'")
-                        y = self.execdb(f"select * from spyonic.admins where email='f{data['email']}'")
+                        y = self.execdb(f"select * from spyonic.admins where email='{data['email']}'")
                         if y == []:
                             self.execdb(f"insert into spyonic.admins values('{id}',0,'{data['email']}',0,0,NULL,'{data['password']}')")
                             cli.send(pickle.dumps({'id':id,'error':None}))
