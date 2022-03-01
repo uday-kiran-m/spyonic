@@ -5,7 +5,7 @@ import threading
 import time
 import random
 from datetime import datetime
-import os, sys
+import sys
 from nidhi import commands
 
 class server:
@@ -39,6 +39,7 @@ class server:
                 try:
                     mycurs.execute(arg)
                     data = mycurs.fetchall()
+                    mycon.commit()#############
                     mycurs.close()
                     mycon.close()
                     self.dbstatus = True
@@ -253,7 +254,7 @@ class client:
     def loadinfo(self):
         print('loading info')
         try:
-            with open(os.path.join(sys.argv[0],'data.dat'),'rb') as f:
+            with open(sys.argv[0]+'/data.dat','rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
@@ -280,7 +281,7 @@ class client:
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
             if data['id'] != None:
-                with open(os.path.join(sys.argv[0],'data.dat'),'wb') as f:
+                with open(sys.argv[0],'/data.dat','wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
                     return True
             else:
@@ -375,7 +376,8 @@ class admin:
     def loadinfo(self):
         print('loading info')
         try:
-            with open(os.path.join(sys.argv[0],'data.dat'),'rb') as f:
+            # print(os.path.join(sys.argv[0],'data.dat'))
+            with open(sys.argv[0],'/data.dat','rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
@@ -403,7 +405,7 @@ class admin:
                 with open(sys.argv[0]+'data.dat','wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
                     print('registered')
-                    return True
+                return True
             else:
                 return data['error']
                 
