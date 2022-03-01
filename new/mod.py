@@ -220,7 +220,7 @@ class server:
                         if y != []:
                             y = y[0]
                             print(y)
-                            self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['email']}')")
+                            self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['os']}',NULL,'{data['password']}','{data['email']}')")
                             cli.send(pickle.dumps({'error':None,'id':id}))
                             self.execdb(f"update table spyonic.admins set device_no = device_no + 1 where id = '{y[0]}'")
                             self.change_client_status(data['id'],1)
@@ -281,6 +281,7 @@ class client:
     def __init__(self,ip) -> None:
         self.ip = ip
         self.port = 6000
+        self.name = 'name'
         # self.instport = self.port-1
         self.commands = commands()
 
@@ -309,7 +310,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':os.name}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':os.name,'name':self.name}))
             print('sent request')
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
