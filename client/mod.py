@@ -2,6 +2,7 @@ import socket
 import pickle
 import threading
 import os
+import platform
 from cmds import commands
 
 
@@ -39,7 +40,7 @@ class client:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':os.name,'name':self.name}))
+            self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':platform.system(),'name':self.name}))
             print('sent request')
             data = pickle.loads(self.server.recv(2048))
             print('recieved:',data)
