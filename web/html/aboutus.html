@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+    <title>SPYONIC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;1,200;1,400;1,600&display=swap" rel="stylesheet">"   -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
+</head>
+<body>
+    <section class="sub-header">
+        <a href="home.html" id="back">&lArr; Back</a>
+        <nav>
+            <a href="home.html"><img scr="../images/logo.png"></a>
+            <div class="nav-links" id="navlinks">
+                <i class="navicon"onclick="hidemenu()" >&#x2715;</i>
+                <ul>
+                    <li><a href="home.html">HOME</a></li>
+                    <!-- <li><a href="">LOGIN</a></li> -->
+                    <li><a href="login.html">SIGNUP</a></li>
+                </ul>    
+
+
+            </div>
+            <i class="navicon" onclick="showhidemenu()">&#9776;</i>
+        </nav>
+        <h1>About Us</h1>
+
+
+    </section>     
+
+ <!---ABOUT US CONTENT-->
+
+ <section class="about-us">
+
+    <div class="row">
+        <div class="about-col">
+            <img src="../images/abb.jpg" alt="">
+            <img src="../images/images.jpg" alt="">
+            <img src="../images/download2.jpg" alt="">
+        </div>
+        <div class="about-col">
+            <h1>What is Spyonic?</h1>
+            <p>It is a software that enables a user to obtain covert information about another's computer activities by transmitting data covertly from their drive. Spyonic is divided into 3 parts: 1.Admin 2. Server 3. Client</p>
+            
+            <h2>How does Spyonic work?</h2>
+            <p2>Spyonic assissts Admin to control the client's PC over the internet. Client's PC and Admin communicate with each other through a server relay.</p2>
+            
+            <h3>How to use Spyonic?</h3>
+            <p3>To use Spyonic, you need to first register your email with us. You can then download the client and the admin app from this website. </p3>
+        </div>
+            
+                
+            
+            
+        </section>
+
+       
+<!---JavaScript for Toggle Menu-->
+   <script>
+       var navlinks= document.getElementById("navlinks");
+
+       function showhidemenu(){
+           navlinks.style.right="0";
+       }
+       function hidemenu(){
+           navlinks.style.right="-200px";
+       }
+       
+    
+   </script>
+    
+</body>
+</html>    
+
+
+
+
