@@ -86,13 +86,20 @@ class server:
             try:
                 data = client.recv(4096)
                 if data != b'':
-                    data = pickle.loads()
+                    print('recieving data')
+                    data = pickle.loads(data)
+                    print(data)
                 if type(data) == dict:
+                    print(data)
                     if data['command'] == 'sendadmin':
-                        adminid = self.execdb(f"select id from spyonic.admins where email = (select email from spyonic.clients where id = '{id}')")
-                        if id in self.admins:
+                        adminid = self.execdb(f"select id from spyonic.admins where email = (select email from spyonic.clients where id = '{id}')")[0][0]
+                        print(adminid in self.admins)
+                        print(adminid)
+                        print(self.admins)
+                        if str(adminid) in self.admins:
+                            print('hmm')
                             admin = self.admins[adminid]
-                            admin.send(data['data'])
+                            admin.sendall(data['data'])
 
                     else:
                         ev.set()
@@ -224,10 +231,10 @@ class server:
                         y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")
                         print('client trying to register')
                         print(x,y)
-                        print(data)
+                        # print(data)
                         if y != []:
                             y = y[0]
-                            print(y)
+                            # print(y)
                             print('registering client')
                             self.execdb(f"insert into spyonic.clients values('{id}',0,'{data['name']}','{data['os']}',NULL,'{data['password']}','{data['email']}')")
                             print('registered client')
@@ -250,7 +257,7 @@ class server:
                             cli.close()
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.clients where id = '{data['id']}'")[0]
-                        print(data,passwd)
+                        # print(data,passwd)
                         if passwd[0] == data['password']:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             
@@ -263,8 +270,8 @@ class server:
                             self.change_client_status(data['id'],1)
                             # print(f"Client connected\nIP:{addr},email:{data['email']}")
                             self.clients[str(data['id'])] = cli
-                            print(self.clients)
-                            print('hmm')
+                            # print(self.clients)
+                            # print('hmm')
                             cli_ev = threading.Event()
                             t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev),daemon=True)
                             t.start()

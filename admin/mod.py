@@ -99,7 +99,10 @@ class admin:
 
     def sender(self,id,command,data=None):
         self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
-        data = pickle.loads(self.server.recv(2048))
+        data = b''
+        while len(data) != 0:
+            data = self.server.recv(2048)
+        data = pickle.loads(data)
         if len(data) != 0:
             return data
 
