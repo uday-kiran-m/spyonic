@@ -9,6 +9,7 @@ class admin:
         self.port = 6000
         # self.instport = self.port-1
         self.connected = False
+        self.email = None
 
     def loadinfo(self):
         print('loading info')
@@ -56,10 +57,11 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            if email == None and self.is_installed():
-                self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':self.passwd,'id':self.id}))
-            elif email and passwd !=None:
+            if email and passwd !=None:
                 self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd,'id':self.id}))
+            elif self.email != None and self.is_installed():
+                self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':self.passwd,'id':self.id}))
+            
             else:
                 print('error')
             data = pickle.loads(self.server.recv(2048))
