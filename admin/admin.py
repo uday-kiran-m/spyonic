@@ -27,7 +27,7 @@ if adm.is_installed():
     # comma = input('Enter command')
     print('command')
     data = adm.sender(None,'status')
-    if data.values()['status'] == 1:
+    if data.values()[0]['status'] == 1:
         print(adm.sender(data.keys()[0],'status'))
 
 else:

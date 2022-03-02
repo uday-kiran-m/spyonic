@@ -101,9 +101,11 @@ class client:
             return False
 
     def reciever(self,ev):
+        print('ready to recieve')
         while not ev.is_set():
             data = self.server.recv(2048)
             if data != b'':
+                print('recieving data')
                 data = pickle.loads(data)
             if len(data) != 0:
                 if data['command']=='status':
