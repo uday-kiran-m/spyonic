@@ -3,7 +3,7 @@ import pickle
 import threading
 import os
 import platform
-from time import time
+import time
 from cmds import commands
 
 
