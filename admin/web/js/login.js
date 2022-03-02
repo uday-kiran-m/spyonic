@@ -39,9 +39,11 @@ function tryregistering(){
 }
 window.onload = function(){
     console.log('checking log')
-    var x = eel.checklogin()
-    console.log(x)
+    eel.checklogin()(function(x){
+        console.log(x)
     if(x==1){
         window.location.replace('/index.html')
     }
+    })
+    
 }
