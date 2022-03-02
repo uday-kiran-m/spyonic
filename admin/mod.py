@@ -98,6 +98,7 @@ class admin:
             return False
 
     def sender(self,id,command,data=None):
+        print('sending')
         self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
         data = b''
         while len(data) == 0:
