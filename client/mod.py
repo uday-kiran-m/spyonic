@@ -123,7 +123,7 @@ class client:
                     self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.running_process()}))
                 else:
                     pass
-                data = b''
+            data = b''
 
     def start(self):
         print('starting')
