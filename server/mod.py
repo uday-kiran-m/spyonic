@@ -111,7 +111,6 @@ class server:
                     data = pickle.loads(data)
                     print(data)
                 if type(data) == dict:
-                        print(data['command']=='status')
                         if data['command'] == 'sendclient':
                             if data['id'] in self.clients:
                                 cli = self.clients[data['id']]
