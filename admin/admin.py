@@ -27,12 +27,12 @@ if adm.is_installed():
     # comma = input('Enter command')
     print('command')
     data = adm.sender(None,'status')
-    print('hmm')
+    # print('hmm')
     for i in data:
         print(data[i]['status'] )
         if data[i]['status'] == 1:
-            print('hm')
-            print(adm.sender(i,'sendclient','status'))
+            # print('hm')
+            print(adm.sender(i,'sendclient','history'))
 
 else:
     adm.login(email,'123')

@@ -99,7 +99,8 @@ class server:
                         if str(adminid) in self.admins:
                             print('hmm')
                             admin = self.admins[adminid]
-                            admin.sendall(data['data'])
+
+                            admin.sendall(pickle.dumps(data['data']))
 
                     else:
                         ev.set()

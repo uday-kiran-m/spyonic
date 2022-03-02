@@ -103,7 +103,7 @@ class admin:
         data = b''
         while len(data) == 0:
             data = self.server.recv(2048)
-        print(data)
+        # print(data)
         data = pickle.loads(data)
         if len(data) != 0:
             return data
