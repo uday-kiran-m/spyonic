@@ -10,6 +10,8 @@ ip = '25.41.20.120'
 email = 'test'
 adm = admin(ip)
 
+
+
 # @eel.expose
 # def register(username,passwd):
 #     print('registering')
@@ -19,9 +21,16 @@ adm = admin(ip)
 # def login(username,passwd):
 #     print('logging in')
 #     return 1
+@eel.expose
+def checklogin():
+    if adm.is_installed():
+        if adm.login() == True:
+            adm.start()
+            return 1
 
-if adm.is_installed():
-    eel.start('html/index.html',jinja_templates = 'html')
+
+# if adm.is_installed():
+    # eel.start('html/index.html',jinja_templates = 'html')
     # adm.login()
     # adm.start()
     # comma = input('Enter command')
@@ -34,7 +43,9 @@ if adm.is_installed():
             # print('hm')
             # print(adm.sender(i,'sendclient','listprocess'))
 
-else:
+# else:
     # adm.login(email,'123')
     # adm.start()
-    eel.start('html/home.html',jinja_templates = 'html',mode=None)
+    # eel.start('html/home.html',jinja_templates = 'html',mode=None)
+
+eel.start('html/home.html',jinja_templates = 'html')

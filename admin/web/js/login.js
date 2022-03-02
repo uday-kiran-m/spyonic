@@ -37,3 +37,9 @@ function tryregistering(){
     })
     
 }
+window.onload = function(){
+    var x = eel.checklogin()
+    if(x==1){
+        window.location.replace('/index.html')
+    }
+}
