@@ -32,7 +32,7 @@ if adm.is_installed():
         print(data[i]['status'] )
         if data[i]['status'] == 1:
             # print('hm')
-            print(adm.sender(i,'sendclient','history'))
+            print(adm.sender(i,'sendclient','listprocess'))
 
 else:
     adm.login(email,'123')
