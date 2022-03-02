@@ -23,6 +23,7 @@ adm = admin(ip)
 #     return 1
 @eel.expose
 def checklogin():
+    print('checking login')
     if adm.is_installed():
         if adm.login() == True:
             adm.start()
