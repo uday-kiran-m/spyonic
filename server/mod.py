@@ -261,8 +261,7 @@ class server:
                         if data['status'] == True:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             self.change_client_status(data['id'],1)
-                                # self.server.send('granted'.encode())
-                            print(f"Client connected\nIP:{addr},email:{data['email']}")
+                            # print(f"Client connected\nIP:{addr},email:{data['email']}")
                             self.clients[data['id']] = cli
                             print('hmm')
                             cli_ev = threading.Event()

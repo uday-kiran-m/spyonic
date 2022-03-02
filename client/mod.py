@@ -130,7 +130,7 @@ class client:
             if status:
                 self.ev = threading.Event()
                 self.connected = True
-                t = threading.Thread(target=self.reciever,args=(self.ev,))
+                t = threading.Thread(target=self.reciever,args=(self.ev,),daemon=True)
                 t.start()
             else:
                 print('cant connect')
