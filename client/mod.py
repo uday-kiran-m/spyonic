@@ -79,8 +79,11 @@ class client:
                 data = self.server.recv(1024).decode()
                 if data == 'namex':
                     self.server.send(pickle.dumps({'id':self.id,'type':'client'}))
-                    if self.server.recv(1024).decode == ' granted':
+                    data = pickle.loads(self.server.recv(2048))
+                    if data['id'] != None:
                         return True
+                    else:
+                        return data['error']
             else:
                 # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)#
                 # self.server.connect((self.ip,self.instport)) 
