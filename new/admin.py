@@ -24,6 +24,10 @@ if adm.is_installed():
     # eel.start('html/index.html',jinja_templates = 'html')
     adm.login(email,'123')
     adm.start()
+    # comma = input('Enter command')
+    print('command')
+    print(adm.sender(None,'status'))
+
 else:
     adm.register(email,'123')
     adm.start()

