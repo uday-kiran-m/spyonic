@@ -10,6 +10,7 @@ class admin:
         # self.instport = self.port-1
         self.connected = False
         self.email = None
+        self.passwd = None
 
     def loadinfo(self):
         print('loading info')
@@ -20,6 +21,7 @@ class admin:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
+                self.passwd = data['passwd']
                 self.installed = True
 
         except:
@@ -42,13 +44,13 @@ class admin:
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
-                    pickle.dump({'id':data['id'],'email':email},f)
+                    pickle.dump({'id':data['id'],'email':email,'passwd':passwd},f)
                     print('registered')
                 return True
             else:
                 return data['error']
                 
-    def login(self,email=None,passwd =None):
+    def login(self,email=None,passwd=None):
         print('logging in')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
@@ -62,7 +64,7 @@ class admin:
                 data = pickle.loads(self.server.recv(2048))
                 if data['id'] != None:
                     with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
-                        pickle.dump({'id':data['id'],'email':email},f)
+                        pickle.dump({'id':data['id'],'email':email,'passwd':passwd},f)
                     return True
                 else:
                     return data['error']
