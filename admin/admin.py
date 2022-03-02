@@ -34,6 +34,6 @@ if adm.is_installed():
             print(adm.sender(i,'sendclient','status'))
 
 else:
-    adm.register(email,'123')
+    adm.login(email,'123')
     adm.start()
     # eel.start('html/home.html',jinja_templates = 'html',mode=None)
