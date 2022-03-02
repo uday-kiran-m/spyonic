@@ -26,7 +26,9 @@ if adm.is_installed():
     adm.start()
     # comma = input('Enter command')
     print('command')
-    print(adm.sender(None,'status'))
+    data = adm.sender(None,'status')
+    if data.values()['status'] == 1:
+        print(adm.sender(data.keys()[0],'status'))
 
 else:
     adm.register(email,'123')
