@@ -29,7 +29,7 @@ if adm.is_installed():
     data = adm.sender(None,'status')
     for i in data:
         if data[i]['status'] == 1:
-            adm.sender(i,'status')
+            print(adm.sender(i,'status'))
 
 else:
     adm.register(email,'123')
