@@ -39,7 +39,7 @@ class commands:
     def running_process(self):
         process = {}
         for proc in psutil.process_iter():
-            print(proc)
+            # print(proc)
             # if proc.status() == 'running':
             process[proc.pid] = [proc.name(),proc.status()]
         return process
