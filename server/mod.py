@@ -83,22 +83,26 @@ class server:
 
     def clilistener(self,id,client,ev):
         while not ev.is_set():
-            data = client.recv(4096)
-            if data != b'':
-                data = pickle.loads()
-            if type(data) == dict:
-                if data['command'] == 'sendadmin':
-                    adminid = self.execdb(f"select id from spyonic.admins where email = (select email from spyonic.clients where id = '{id}')")
-                    if id in self.admins:
-                        admin = self.admins[adminid]
-                        admin.send(data['data'])
+            try:
+                data = client.recv(4096)
+                if data != b'':
+                    data = pickle.loads()
+                if type(data) == dict:
+                    if data['command'] == 'sendadmin':
+                        adminid = self.execdb(f"select id from spyonic.admins where email = (select email from spyonic.clients where id = '{id}')")
+                        if id in self.admins:
+                            admin = self.admins[adminid]
+                            admin.send(data['data'])
 
-                else:
-                    ev.set()
+                    else:
+                        ev.set()
+            except:
+                ev.set()
         else:
             self.change_client_status(id,0)
             self.execdb(f"update spyonic.clients set last_online = '{datetime.today().strftime('%Y-%m-%d')}' where id = {id}")
             client.close()
+            print(self.clients)
             del self.clients[id]
 
     def adminlistener(self,id,admin,ev):
@@ -249,16 +253,25 @@ class server:
                         print(data,passwd)
                         if passwd[0] == data['password']:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
-                            self.change_client_status(data['id'],1)
-                            cli_ev = threading.Event()
-                            t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev),daemon=True)
-                            t.start()
-                                # self.server.send('granted'.encode())
-                            print(f"Client connected\nIP:{addr},email:{data['email']}")
-                            self.clients[data['id']] = cli
+                            
                         else:
                             cli.send(pickle.dumps({'id':None,'error':'incorrect password'}))
                             cli.close()
+                    elif data['user'] == 'connecting':
+                        if data['status'] == True:
+                            cli.send(pickle.dumps({'id':data['id'],'error':None}))
+                            self.change_client_status(data['id'],1)
+                                # self.server.send('granted'.encode())
+                            print(f"Client connected\nIP:{addr},email:{data['email']}")
+                            self.clients[data['id']] = cli
+                            print('hmm')
+                            cli_ev = threading.Event()
+                            t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev),daemon=True)
+                            t.start()
+                        else:
+                            cli.send(pickle.dumps({'id':None,'error':'not logged in'}))
+                            cli.close()
+
 
 
                         

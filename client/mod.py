@@ -14,6 +14,7 @@ class client:
         self.name = 'name'
         # self.instport = self.port-1
         self.commands = commands()
+        self.loggedin = False
 
     def loadinfo(self):
         print('loading info')
@@ -66,6 +67,7 @@ class client:
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
                 #     pickle.dump({'id':data['id'],'email':email})
+                    self.loggedin = True
                     return True
             else:
                 return data['error']
@@ -78,7 +80,7 @@ class client:
                 self.server.connect((self.ip,self.port))
                 data = self.server.recv(1024).decode()
                 if data == 'namex':
-                    self.server.send(pickle.dumps({'id':self.id,'type':'client'}))
+                    self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
                     data = pickle.loads(self.server.recv(2048))
                     if data['id'] != None:
                         return True
