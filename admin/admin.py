@@ -28,7 +28,9 @@ if adm.is_installed():
     print('command')
     data = adm.sender(None,'status')
     for i in data:
+        print(data[i]['status'] )
         if data[i]['status'] == 1:
+            print('hm')
             print(adm.sender(i,'sendclient','status'))
 
 else:

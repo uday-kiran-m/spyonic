@@ -47,7 +47,7 @@ class admin:
             else:
                 return data['error']
                 
-    def login(self,email,passwd):
+    def login(self,email=None,passwd =None):
         print('logging in')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
@@ -56,7 +56,12 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id}))
+            if email == None and self.is_installed():
+                self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':self.passwd,'id':self.id}))
+            elif email and passwd !=None:
+                self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd,'id':self.id}))
+            else:
+                print('error')
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
