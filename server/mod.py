@@ -190,6 +190,7 @@ class server:
                             cli.close()
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.admins where email = '{data['email']}'")
+                        print(passwd,data)
                         if passwd != []:
                             print(passwd)
                             if passwd[0][0] == data['password']:
@@ -246,6 +247,7 @@ class server:
                             cli.close()
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.clients where id = '{data['id']}'")[0]
+                        print(data,passwd)
                         if passwd[0] == data['password']:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             self.change_client_status(data['id'],1)
@@ -256,7 +258,7 @@ class server:
                             print(f"Client connected\nIP:{addr},email:{data['email']}")
                             self.clients[data['id']] = cli
                         else:
-                            cli.send(pickle.dumps({'id':None,'error':'incorrect statement'}))
+                            cli.send(pickle.dumps({'id':None,'error':'incorrect password'}))
                             cli.close()
 
 
