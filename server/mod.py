@@ -84,7 +84,7 @@ class server:
     def clilistener(self,id,client,ev):
         while not ev.is_set():
             try:
-                data = client.recv(4096)
+                data = client.recv(8000)
                 if data != b'':
                     print('recieving data')
                     data = pickle.loads(data)

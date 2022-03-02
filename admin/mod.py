@@ -102,7 +102,7 @@ class admin:
         self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
         data = b''
         while len(data) == 0:
-            data = self.server.recv(2048)
+            data = self.server.recv(8000)
         # print(data)
         data = pickle.loads(data)
         if len(data) != 0:
