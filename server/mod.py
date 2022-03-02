@@ -258,7 +258,7 @@ class server:
                             cli.close()
                     elif data['user'] == 'login':
                         passwd = self.execdb(f"select password from spyonic.clients where id = '{data['id']}'")[0]
-                        # print(data,passwd)
+                        print(data,passwd)
                         if passwd[0] == data['password']:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             

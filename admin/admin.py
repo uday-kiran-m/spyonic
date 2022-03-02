@@ -21,20 +21,20 @@ adm = admin(ip)
 #     return 1
 
 if adm.is_installed():
-    # eel.start('html/index.html',jinja_templates = 'html')
-    adm.login()
-    adm.start()
+    eel.start('html/index.html',jinja_templates = 'html')
+    # adm.login()
+    # adm.start()
     # comma = input('Enter command')
-    print('command')
-    data = adm.sender(None,'status')
+    # print('command')
+    # data = adm.sender(None,'status')
     # print('hmm')
-    for i in data:
-        print(data[i]['status'] )
-        if data[i]['status'] == 1:
+    # for i in data:
+        # print(data[i]['status'] )
+        # if data[i]['status'] == 1:
             # print('hm')
-            print(adm.sender(i,'sendclient','listprocess'))
+            # print(adm.sender(i,'sendclient','listprocess'))
 
 else:
-    adm.login(email,'123')
-    adm.start()
-    # eel.start('html/home.html',jinja_templates = 'html',mode=None)
+    # adm.login(email,'123')
+    # adm.start()
+    eel.start('html/home.html',jinja_templates = 'html',mode=None)
