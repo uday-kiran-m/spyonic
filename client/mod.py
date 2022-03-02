@@ -3,6 +3,7 @@ import pickle
 import threading
 import os
 import platform
+from time import time
 from cmds import commands
 
 
@@ -133,6 +134,10 @@ class client:
                 self.connected = True
                 t = threading.Thread(target=self.reciever,args=(self.ev,),daemon=True)
                 t.start()
+                while Exception != KeyboardInterrupt:
+                    time.sleep(10)
+                else:
+                    self.ev.set()
             else:
                 print('cant connect')
 
