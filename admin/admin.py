@@ -22,11 +22,12 @@ adm = admin(ip)
 
 if adm.is_installed():
     # eel.start('html/index.html',jinja_templates = 'html')
-    adm.login(email,'123')
+    adm.login()
     adm.start()
     # comma = input('Enter command')
     print('command')
     data = adm.sender(None,'status')
+    print('hmm')
     for i in data:
         print(data[i]['status'] )
         if data[i]['status'] == 1:
