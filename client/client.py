@@ -8,7 +8,7 @@ ip = '25.41.20.120'
 cli = client(ip)
 if not cli.is_installed():
     cli.register(email,'123')
-    cli.start()
+    # cli.start()
 else:
     x = cli.login(email,'123')
     if x == True:

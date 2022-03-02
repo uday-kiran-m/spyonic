@@ -108,6 +108,7 @@ class client:
     def reciever(self,ev):
         print('ready to recieve')
         while not ev.is_set():
+            print('hmm')
             data = self.server.recv(2048)
             if data != b'':
                 print('recieving data')
