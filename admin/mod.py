@@ -58,19 +58,25 @@ class admin:
             #     data = pickle.load(f)
             #     self.email = data['email']
             if email and passwd !=None:
-                self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd,'id':self.id}))
+                self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd}))
+                data = pickle.loads(self.server.recv(2048))
+                if data['id'] != None:
+                    with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
+                        pickle.dump({'id':data['id'],'email':email},f)
+                    return True
+                else:
+                    return data['error']
             elif self.email != None and self.is_installed():
                 self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':self.passwd,'id':self.id}))
-            
-            else:
-                print('error')
-            data = pickle.loads(self.server.recv(2048))
-            if data['id'] != None:
+                data = pickle.loads(self.server.recv(2048))
+                if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
                 #     pickle.dump({'id':data['id'],'email':email})
                     return True
+                else:
+                    return data['error']
             else:
-                return data['error']
+                print('error')
        
     def setconn(self):
         print('init conn')
