@@ -108,7 +108,7 @@ class server:
                 ev.set()
         else:
             self.change_client_status(id,0)
-            self.execdb(f"update spyonic.clients set last_online = '{datetime.today().strftime('%Y-%m-%d')}' where id = {id}")
+            self.execdb(f"update spyonic.clients set last_online = '{str(datetime.today().strftime('%Y-%m-%d %H:%M:%S'))}' where id = {id}")
             client.close()
             del self.clients[str(id)]
 
@@ -132,7 +132,7 @@ class server:
                             clients = self.execdb(f"select id, name ,status ,os ,last_online from spyonic.clients where email='{email}'")
                             clidata = {}
                             for client in clients:
-                                clidata[client[0]] = {'name':client[1],'status':client[2],'os':client[3],'last_online':client[4]} 
+                                clidata[client[0]] = {'name':client[1],'status':client[2],'os':client[3],'last_online':str(client[4])} 
                             admin.sendall(pickle.dumps(clidata))
                         else:
                             pass

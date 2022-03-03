@@ -18,7 +18,7 @@ function sidebar(){
 
 async function getstatus(){
     console.log('geting info')
-    let data = await eel.status()
+    let data = await eel.status()()
     console.log(data)
     let p = document.getElementById('data')
     p.innerHTML = data
