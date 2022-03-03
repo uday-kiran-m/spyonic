@@ -49,11 +49,6 @@ def checklogin():
 def status():
     adm.start()
     data = adm.sender(None,'status')
-    for i in data:
-        if data[i]['status'] == 0:
-            data[i]['status'] = 'Offline'
-        else:
-            data[i]['status'] = 'Online'
     data = json.dumps(data)
     print(data)
     return data
