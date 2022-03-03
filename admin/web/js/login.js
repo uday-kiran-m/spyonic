@@ -47,7 +47,6 @@ async function tryregistering(){
 async function cheklogin(){
     console.log('checking log');
     let x = await eel.checklogin()();
-    console.log(x);
     if(x==1){
         window.location.href = '/html/index.html'
     }
@@ -86,6 +85,7 @@ function checkCookie() {
     // alert("Welcome again " + user);
     console.log('authenticating')
     let x = cheklogin()
+    console.log(x)
     if (x==0){
         setCookie("login",0)
         checkCookie()
