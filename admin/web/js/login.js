@@ -14,7 +14,7 @@ async function trylogin(){
     var email = document.getElementById('lemail')
     var passwd = document.getElementById('lpasswd')
     eel.login(email,passwd)(function isreg(stats){
-        if (stats = 1){
+        if (stats == 1){
             console.log('logged in')
             setCookie("username", email);
             setCookie("login",1);
@@ -31,7 +31,7 @@ async function tryregistering(){
     var email = document.getElementById('remail')
     var passwd = document.getElementById('rpasswd')
     eel.register(email,passwd)(function isreg(stats){
-        if (stats = 1){
+        if (stats == 1){
             console.log('registered')
             setCookie("username", email);
             setCookie("login",1);

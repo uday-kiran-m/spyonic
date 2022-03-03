@@ -13,7 +13,7 @@ adm = admin(ip)
 
 
 @eel.expose
-def register(username,passwd):
+def register(email,passwd):
     data = adm.register(email,passwd)
     if data == True:
         return 1
@@ -21,8 +21,8 @@ def register(username,passwd):
         return data
 
 @eel.expose
-def login(username,passwd):
-    data =adm.login(username,passwd)
+def login(email,passwd):
+    data =adm.login(email,passwd)
     if data == True:
         return 1
     else:
