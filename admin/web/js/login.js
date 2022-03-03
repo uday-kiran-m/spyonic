@@ -49,6 +49,9 @@ async function cheklogin(){
     if(x==1){
         window.location.href = '/html/index.html'
     }
+    else{
+        return 0
+    }
     
 }
 
@@ -80,7 +83,11 @@ function checkCookie() {
   if (user != "" || status != 0) {
     // alert("Welcome again " + user);
     console.log('authenticating')
-    cheklogin()
+    let x = cheklogin()
+    if (x==0){
+        setCookie("login",0)
+        checkCookie()
+    }
   } else {
     // user = prompt("Please enter your name:", "");
     if (user != "" && user != null) {
