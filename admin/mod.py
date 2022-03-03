@@ -105,6 +105,7 @@ class admin:
             data = self.server.recv(8000)
         # print(data)
         data = pickle.loads(data)
+        print(data)
         if len(data) != 0:
             return data
 
