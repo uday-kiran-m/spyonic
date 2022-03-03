@@ -1,6 +1,7 @@
 from mod import admin
 import eel
 import os,sys
+import json
 # print(sys.argv)
 url = os.path.join(sys.path[0],'web')
 eel.init(url)
@@ -48,6 +49,8 @@ def checklogin():
 def status():
     adm.start()
     data = adm.sender(None,'status')
+    data = json.dumps(data)
+    print(data)
     return data
 # if adm.is_installed():
     # eel.start('html/index.html',jinja_templates = 'html')
