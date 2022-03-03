@@ -47,12 +47,10 @@ async function cheklogin(){
     
 }
 
-window.onload = cheklogin()
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  let expires = "expires="+d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+
+
+function setCookie(cname, cvalue) {
+  document.cookie = cname + "=" + cvalue + ";" ;
 }
 
 function getCookie(cname) {
@@ -72,12 +70,27 @@ function getCookie(cname) {
 
 function checkCookie() {
   let user = getCookie("username");
-  if (user != "") {
-    alert("Welcome again " + user);
+  let status = getCookie("login")
+  console.log('checking cookie')
+  if (user != "" || status != 0) {
+    // alert("Welcome again " + user);
+    console.log('authenticating')
+    cheklogin()
   } else {
-    user = prompt("Please enter your name:", "");
+    // user = prompt("Please enter your name:", "");
     if (user != "" && user != null) {
-      setCookie("username", user, 365);
+      console.log('user login required')
+      setCookie("username", user);
+      setCookie("login",0);
+      Openlogin()
+    }
+    else{
+        console.log('user unknown')
+        setCookie("username",'')
+        OpenRegister()
     }
   }
 }
+
+
+window.onload = checkCookie()
