@@ -14,6 +14,7 @@ adm = admin(ip)
 
 @eel.expose
 def register(email,passwd):
+    print(email,passwd)
     data = adm.register(email,passwd)
     if data == True:
         return 1
