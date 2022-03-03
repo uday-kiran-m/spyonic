@@ -16,7 +16,7 @@ function sidebar(){
     }
 }
 
-window.onload = async function(){
+async function getstatus(){
     console.log('geting info')
     let data = await eel.status()
     let p = document.getElementById('data')
