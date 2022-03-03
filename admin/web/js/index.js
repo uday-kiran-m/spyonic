@@ -16,6 +16,7 @@ function sidebar(){
     }
 }
 
+
 async function getstatus(){
     console.log('geting info')
     let data = await eel.status()()
@@ -36,3 +37,5 @@ async function getstatus(){
     console.log(data)
     
 }
+
+window.onload = setTimeout(getstatus(),3000)
