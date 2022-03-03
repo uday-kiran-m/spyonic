@@ -37,6 +37,7 @@
 <!---JavaScript for Toggle Menu-->
    <script>
        var navlinks= document.getElementById("navlinks");
+       document.addEventListener('contextmenu', event => event.preventDefault());
 
        function showhidemenu(){
            navlinks.style.right="0";

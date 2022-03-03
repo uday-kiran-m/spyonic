@@ -1,3 +1,4 @@
+document.addEventListener('contextmenu', event => event.preventDefault());
 var reg = document.getElementById('register');
 var login = document.getElementById('login')
 function OpenRegister() {
