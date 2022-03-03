@@ -37,13 +37,14 @@ function tryregistering(){
     })
     
 }
-window.onload = function(){
-    console.log('checking log')
-    eel.checklogin()(function(x){
-        console.log(x)
+async function cheklogin(){
+    console.log('checking log');
+    let x = await eel.checklogin()();
+    console.log(x);
     if(x==1){
-        window.location.replace('/index.html')
+        window.location.href = '/html/index.html'
     }
-    })
     
 }
+
+window.onload = cheklogin()

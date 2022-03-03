@@ -28,7 +28,14 @@ def checklogin():
     if adm.is_installed():
         if adm.login() == True:
             adm.start()
+            print('redirecting')
             return 1
+        else:
+            print('no redirect')
+            return 0
+    else:
+        return 0
+    # return 1
 
 
 # if adm.is_installed():
@@ -50,4 +57,4 @@ def checklogin():
     # adm.start()
     # eel.start('html/home.html',jinja_templates = 'html',mode=None)
 
-eel.start('html/home.html',jinja_templates = 'html')
+eel.start('html/home.html',jinja_templates = 'html',mode=None)
