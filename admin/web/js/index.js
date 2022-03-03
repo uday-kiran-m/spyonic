@@ -19,7 +19,20 @@ function sidebar(){
 async function getstatus(){
     console.log('geting info')
     let data = await eel.status()()
+    let table = document.getElementById('data')
+    
+    let tbod = ''
+    for(i in data){
+        data1 = data[i]
+        text = '<tr>'
+        for(j in data1){
+            text += '<td>'+data1[j]+'</td>'
+        }
+        text+='</tr>'
+        tbod += text
+
+    }
+    table.innerHTML = tbod
     console.log(data)
-    let p = document.getElementById('data')
-    p.innerHTML = data
+    
 }
