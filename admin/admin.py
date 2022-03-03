@@ -44,7 +44,11 @@ def checklogin():
         return 0
     # return 1
 
-
+@eel.expose
+def status():
+    adm.start()
+    data = adm.sender(None,'status')
+    return data
 # if adm.is_installed():
     # eel.start('html/index.html',jinja_templates = 'html')
     # adm.login()

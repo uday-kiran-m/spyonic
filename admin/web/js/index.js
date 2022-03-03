@@ -15,11 +15,10 @@ function sidebar(){
         menu_icon.innerHTML = '&#9776;'
     }
 }
-eel.expose(cont)
-function cont(text){
-    var content = document.getElementsByClassName("content")
-    content[0].innerText = text
-    content[1].innerText = text
-    content[2].innerText = text
-    content[3].innerText = text
+
+window.onload = async function(){
+    console.log('geting info')
+    let data = await eel.status()
+    let p = document.getElementById('data')
+    p.innerHTML = data
 }
