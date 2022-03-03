@@ -11,8 +11,8 @@ function Openlogin() {
 }
 async function trylogin(){
     console.log('logging')
-    var email = document.getElementById('lemail')
-    var passwd = document.getElementById('lpasswd')
+    var email = document.getElementById('lemail').value
+    var passwd = document.getElementById('lpasswd').value
     eel.login(email,passwd)(function isreg(stats){
         if (stats == 1){
             console.log('logged in')
@@ -28,8 +28,9 @@ async function trylogin(){
 }
 async function tryregistering(){
     console.log('registering')
-    var email = document.getElementById('remail')
-    var passwd = document.getElementById('rpasswd')
+    var email = document.getElementById('remail').value
+    var passwd = document.getElementById('rpasswd').value
+    console.log(email,passwd)
     eel.register(email,passwd)(function isreg(stats){
         if (stats == 1){
             console.log('registered')
