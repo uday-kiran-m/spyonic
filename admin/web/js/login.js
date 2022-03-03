@@ -9,30 +9,35 @@ function Openlogin() {
     login.style.display = 'block';
     reg.style.display = 'none';
 }
-function trylogin(){
+async function trylogin(){
     console.log('logging')
     var email = document.getElementById('lemail')
     var passwd = document.getElementById('lpasswd')
     eel.login(email,passwd)(function isreg(stats){
-        if (stats = 0){
-            console.log('cant login')
+        if (stats = 1){
+            console.log('logged in')
+            setCookie("username", email);
+            setCookie("login",1);
+
         }
         else{
-            console.log('loggedin')
+            console.log(stats)
         }
     })
     
 }
-function tryregistering(){
+async function tryregistering(){
     console.log('registering')
     var email = document.getElementById('remail')
     var passwd = document.getElementById('rpasswd')
     eel.register(email,passwd)(function isreg(stats){
-        if (stats = 0){
-            console.log('cant login')
+        if (stats = 1){
+            console.log('registered')
+            setCookie("username", email);
+            setCookie("login",1);
         }
         else{
-            console.log('loggedin')
+            console.log(stats)
         }
     })
     

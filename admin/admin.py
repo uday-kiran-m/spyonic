@@ -12,15 +12,21 @@ adm = admin(ip)
 
 
 
-# @eel.expose
-# def register(username,passwd):
-#     print('registering')
-#     return 1
+@eel.expose
+def register(username,passwd):
+    data = adm.register(email,passwd)
+    if data == True:
+        return 1
+    else:
+        return data
 
-# @eel.expose
-# def login(username,passwd):
-#     print('logging in')
-#     return 1
+@eel.expose
+def login(username,passwd):
+    data =adm.login(username,passwd)
+    if data == True:
+        return 1
+    else:
+        return data
 
 @eel.expose
 def checklogin():
