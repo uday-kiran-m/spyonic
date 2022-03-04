@@ -1,5 +1,5 @@
 from mod import admin
-import os,sys
+import os
 from prettytable import PrettyTable
 # print(sys.argv)
 

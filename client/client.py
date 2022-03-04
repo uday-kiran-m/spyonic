@@ -1,5 +1,4 @@
 from mod import client
-import eel
 
 ip = input('Enter server IP: ')
 user = input("Enter username: ")
