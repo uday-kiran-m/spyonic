@@ -105,8 +105,31 @@ footer{
     vertical-align: middle;
 }
 .content{
-    background-color: rgb(123, 255, 0);
+    background-color: #73b3cfaf;
     padding: 20%;
     margin: 3px;
     text-align: center;
+}
+
+#status {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+#status td, #status th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+  
+#status tr:nth-child(even){background-color: #f2f2f2;}
+  
+#status tr:hover {background-color: #ddd;}
+  
+#status th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
 }

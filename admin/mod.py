@@ -9,6 +9,8 @@ class admin:
         self.port = 6000
         # self.instport = self.port-1
         self.connected = False
+        self.email = None
+        self.passwd = None
 
     def loadinfo(self):
         print('loading info')
@@ -19,6 +21,7 @@ class admin:
                 data = pickle.load(f)
                 self.id = data['id']
                 self.email = data['email']
+                self.passwd = data['passwd']
                 self.installed = True
 
         except:
@@ -41,13 +44,13 @@ class admin:
             data = pickle.loads(self.server.recv(2048))
             if data['id'] != None:
                 with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
-                    pickle.dump({'id':data['id'],'email':email},f)
+                    pickle.dump({'id':data['id'],'email':email,'passwd':passwd},f)
                     print('registered')
                 return True
             else:
                 return data['error']
                 
-    def login(self,email,passwd):
+    def login(self,email=None,passwd=None):
         print('logging in')
         self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.server.connect((self.ip,self.port))
@@ -56,14 +59,26 @@ class admin:
             # with open('temp.dat','wb') as f:
             #     data = pickle.load(f)
             #     self.email = data['email']
-            self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':passwd,'id':self.id}))
-            data = pickle.loads(self.server.recv(2048))
-            if data['id'] != None:
+            if email and passwd !=None:
+                self.server.send(pickle.dumps({'type':'admin','email':email,'user':'login','password':passwd}))
+                data = pickle.loads(self.server.recv(2048))
+                if data['id'] != None:
+                    with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
+                        pickle.dump({'id':data['id'],'email':email,'passwd':passwd},f)
+                    return True
+                else:
+                    return data['error']
+            elif self.email != None and self.is_installed():
+                self.server.send(pickle.dumps({'type':'admin','email':self.email,'user':'login','password':self.passwd,'id':self.id}))
+                data = pickle.loads(self.server.recv(2048))
+                if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
                 #     pickle.dump({'id':data['id'],'email':email})
                     return True
+                else:
+                    return data['error']
             else:
-                return data['error']
+                print('error')
        
     def setconn(self):
         print('init conn')
@@ -83,8 +98,14 @@ class admin:
             return False
 
     def sender(self,id,command,data=None):
+        print('sending')
         self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
-        data = pickle.loads(self.server.recv(2048))
+        data = b''
+        while len(data) == 0:
+            data = self.server.recv(8000)
+        # print(data)
+        data = pickle.loads(data)
+        print(data)
         if len(data) != 0:
             return data
 

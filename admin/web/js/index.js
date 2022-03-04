@@ -15,11 +15,29 @@ function sidebar(){
         menu_icon.innerHTML = '&#9776;'
     }
 }
-eel.expose(cont)
-function cont(text){
-    var content = document.getElementsByClassName("content")
-    content[0].innerText = text
-    content[1].innerText = text
-    content[2].innerText = text
-    content[3].innerText = text
+
+
+async function getstatus(){
+    console.log('geting info')
+    let data =JSON.parse(await eel.status()())
+    let table = document.getElementById('status')
+    
+    let tbod = '<tr><th>Name</th><th>Status</th><th>OS</th><th>Last Online</th></tr>'
+    for(i in data){
+        data1 = data[i]
+        text = '<tr>'
+        console.log(typeof data)
+        for(j in data1){
+           
+            text += '<td>'+data1[j]+'</td>'
+        }
+        text+='</tr>'
+        tbod += text
+
+    }
+    table.innerHTML = tbod
+    console.log(data)
+    
 }
+
+window.onload = setTimeout(getstatus(),3000)
