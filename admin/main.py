@@ -83,7 +83,7 @@ def loggedin():
                     print('Click Enter To Continue')
                     input()
                 else:
-                    print("No devices Online")
+                    print("No Devices Online")
                     input()
             else:
                 print('No Devices Found')
@@ -119,10 +119,10 @@ def loggedin():
                     print('Click Enter To Continue')
                     input()
                 else:
-                    print("No devices online")
+                    print("No Devices Online")
                     input()
             else:
-                print('No devices Found')
+                print('No Devices Found')
                 input()
         elif ch == 4:
             os.system('cls')
@@ -141,7 +141,7 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter the Serial No: "))
                     data = adm.sender(clients[id],'sendclient','listprocess')
                     tb = PrettyTable()
                     tb.field_names = ['PID','Name','Status']
@@ -157,7 +157,7 @@ def loggedin():
                     print('No Devices Online')
                     input()
             else:
-                print('NO devices found')
+                print('NO Devices Found')
         elif ch == 5:
             os.system('cls')
             adm.start()
@@ -175,8 +175,24 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter the Serial No: "))
                     data = adm.sender(clients[id],'sendclient','interfaces')
+                    tb = PrettyTable()
+                    tb.field_names = ['Interfaces']
+                    for i in data:
+                        tb.add_row([i])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click Enter To Continue')
+                    input()
+                else:
+                    print('No Devices Online')
+                    input()
+            else:
+                print('NO Devices Found')
+                    
+                    
         elif ch == 6:
             os.system('cls')
             adm.start()
@@ -194,8 +210,23 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter Ihe Serial No: "))
                     data = adm.sender(clients[id],'sendclient','netconn')
+                    os.system('cls')
+                    tb = PrettyTable()
+                    tb.field_names = ['IP','Port']
+                    for i in data:
+                        tb.add_row([i,data[i]])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click Enter To Continue')
+                    input()
+                else:
+                    print('No Devices Online')
+                    input()
+            else:
+                print('NO Devices Found')
         elif ch == 7:
             os.system('cls')
             adm.start()
@@ -213,8 +244,19 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter The Serial No: "))
                     data = adm.sender(clients[id],'sendclient','poweroff')
+                    os.system('cls')
+                    print(data)
+                    print()
+                    print()
+                    print('Click Enter To Continue')
+                    input()
+                else:
+                    print('No Devices Online')
+                    input()
+            else:
+                print('NO Devices Found')
         elif ch == 8:
             os.system('cls')
             adm.start()
@@ -232,8 +274,19 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter The Serial No: "))
                     data = adm.sender(clients[id],'sendclient','reboot')
+                    os.system('cls')
+                    print(data)
+                    print()
+                    print()
+                    print('Click Enter To Continue')
+                    input()
+                else:
+                    print('No Devices Online')
+                    input()
+            else:
+                print('NO devices found')
         elif ch == 9:
             os.system('cls')
             adm.start()
@@ -251,8 +304,18 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter The Serial No: "))
                     data = adm.sender(clients[id],'sendclient','logout')
+                    print(data)
+                    print()
+                    print()
+                    print('Click Enter To Continue')
+                    input()
+                else:
+                    print('No Devices Online')
+                    input()
+            else:
+                print('NO devices found')
         elif ch == 10:
             print('Exiting')
             go = False
@@ -309,5 +372,6 @@ def reg():
 
 if adm.is_installed():
     loggedin()
+
 else:
     reg()

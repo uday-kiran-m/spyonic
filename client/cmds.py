@@ -18,7 +18,7 @@ class commands:
         return cpuinfo
 
     def interfaces(self):
-        return psutil.net_if_addrs().keys()
+        return list(psutil.net_if_addrs().keys())
 
     def battery_percent(self):
         return psutil.sensors_battery().percent
@@ -54,11 +54,11 @@ class commands:
 
     def poweroff(self):
         os.system("shutdown /s /t 1")
-        return 'shutting down'
+        return 'Shutting Down'
 
     def restart(self):
         os.system("shutdown /r /t 1")
-        return 'restart'
+        return 'Rebooting'
     def logout(self):
         os.system("shutdown -l")
-        return 'logged out'
+        return 'Logged Out'
