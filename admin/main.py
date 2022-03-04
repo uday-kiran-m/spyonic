@@ -1,29 +1,30 @@
 from mod import admin
 import os
 from prettytable import PrettyTable
-# print(sys.argv)
 
-ip = input("Enter IP address of the server:")
-# ip = '25.41.20.120'
-# email = input('enter email: ')
+ip = input("Enter IP Address Of The Server:")
 adm = admin(ip)
-
 
 def loggedin():
     adm.login()
     go = True
     while go:
         os.system('cls')
-        print('\t\t\t\tSpyonic\t\t\t\t')
+        print('Spyonic'.center(150))
         print()
         print()
         print('Commands Available:')
-        print('1. Get info on all systems available')
-        print('2. Get info on system state ')
-        print("3. Get info on system's browser history")
-        print("4. Get info on running process on client")
-        print('5. Logout')
-        print("6. Exit")
+        print('1. Get Info On All Systems Available')
+        print('2. Get Info On System State ')
+        print("3. Get Info On System's Browser History")
+        print("4. Get Info On Running Process On Client")
+        print("5. Get Info On Interfaces Of Client")
+        print("6. Get Info On Net Connections of Client")
+        print("7. Poweroff Client")
+        print("8. Reboot Client")
+        print("9. Logout Client")
+        print('10. Logout')
+        print("11. Exit")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             os.system('cls')
@@ -32,8 +33,6 @@ def loggedin():
             print('Systems Available')
             tb = PrettyTable()
             tb.field_names = ['ID','Name','Status','OS','Last Online']
-            
-            # print('ID\t\tName\t\tstatus\t\tOS\t\tLast Online')
             for i in data:
                 cont = []
                 if data[i]['status'] == 0:
@@ -48,10 +47,10 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    print('click enter to continue')
+                    print('Click Enter To Continue')
                     input()
                 else:
-                    print('No devices found')
+                    print('No Devices Found')
                     input()
         elif ch == 2:
             os.system('cls')
@@ -60,7 +59,6 @@ def loggedin():
             clients = {}
             if len(cli) != 0:
                 print("Systems Available")
-                # print('Sno\t\tID\t\tName')
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -72,25 +70,23 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter The Serial No: "))
                     data = adm.sender(clients[id],'sendclient','status')
                     os.system('cls')
                     tb = PrettyTable()
                     print('System Status')
                     tb.field_names = ['CPU %','RAM Total','RAM %']
-                    # print('Cpu %\t\tRam Total\t\tRam%')
                     tb.add_row([data['cpu'],data['ram']['total'],data['ram']['percent']])
                     print(tb)
                     print()
                     print()
-                    print('click enter to continue')
+                    print('Click Enter To Continue')
                     input()
                 else:
                     print("No devices Online")
                     input()
             else:
-                print('No devices found')
+                print('No Devices Found')
                 input()
         elif ch == 3:
             os.system('cls')
@@ -110,10 +106,8 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-
-                    id = int(input("Enter the serial NO: "))
+                    id = int(input("Enter The Serial No: "))
                     data = adm.sender(clients[id],'sendclient','history')
-                    # print('Date\t\tUrl')
                     tb = PrettyTable()
                     tb.field_names = ['Date','URL']
                     print('Browser History')
@@ -122,7 +116,7 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    print('Click enter to continue')
+                    print('Click Enter To Continue')
                     input()
                 else:
                     print("No devices online")
@@ -147,10 +141,8 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-
                     id = int(input("Enter the serial NO: "))
                     data = adm.sender(clients[id],'sendclient','listprocess')
-                    # print('PID\t\tName\t\tStatus')
                     tb = PrettyTable()
                     tb.field_names = ['PID','Name','Status']
                     print('Syster Processes')
@@ -159,27 +151,123 @@ def loggedin():
                     print(tb)
                     print()
                     print()
-                    print('Click enter to continue')
+                    print('Click Enter To Continue')
                     input()
                 else:
-                    print('No devices online')
+                    print('No Devices Online')
                     input()
             else:
                 print('NO devices found')
         elif ch == 5:
-            go = False
-            os.remove(os.path.join(os.path.dirname(__file__),'data.dat'))
-            reg()
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','interfaces')
         elif ch == 6:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','netconn')
+        elif ch == 7:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','poweroff')
+        elif ch == 8:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','reboot')
+        elif ch == 9:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','logout')
+        elif ch == 10:
             print('Exiting')
             go = False
             break
+        elif ch == 11:
+            go = False
+            os.remove(os.path.join(os.path.dirname(__file__),'data.dat'))
+            print('Logged Out')
+            input()
+            reg()
         else:
-            print('Invalid option')
+            print('Invalid Option')
             input()
 
 def reg():
-    
     go = True
     while go:
         os.system('cls')
@@ -189,28 +277,28 @@ def reg():
         print('1.Register')
         print('2.Login')
         print('3.Exit')
-        ch = int(input("Enter your choice:"))
+        ch = int(input("Enter Your Choice:"))
         if ch == 1:
-            em = input('Enter email: ')
-            passwd = input('Enter password: ')
+            em = input('Enter Username: ')
+            passwd = input('Enter Password: ')
             chec = adm.register(em,passwd)
             if chec == True:
-                print('Registerd,Restart the program')
+                print('Registerd,Restart The Program')
                 go = False
                 loggedin()
             else:
-                print('Couldnt register',chec)
+                print("Couldn't Register",chec)
                 input()
         elif ch == 2:
-            em = input('Enter email: ')
-            passwd = input('Enter password: ')
+            em = input('Enter Username: ')
+            passwd = input('Enter Password: ')
             chec = adm.login(em,passwd)
             if chec == True:
-                print('logged in,Restart the program')
+                print('logged in,Restarting The Program')
                 go = False
                 loggedin()
             else:
-                print('Couldnt login',chec)
+                print("Couldn't Login",chec)
                 input()
         elif ch == 3:
             go = False

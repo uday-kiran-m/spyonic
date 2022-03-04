@@ -1,12 +1,12 @@
 import psutil
 from browser_history import get_history
+import os
 
 class commands:
     def __init__(self) -> None:
         pass
 
     def ram(self):
-        '''gives list of total mem, avail mem , %'''
         raminfo=psutil.virtual_memory()
         total = raminfo.total/(1024*1024*1024)
         avail = raminfo.available
@@ -14,20 +14,16 @@ class commands:
         return {'total':total,'available':avail,'percent':percent}
 
     def cpu_percent(self):
-        '''gives % of cpu'''
         cpuinfo=psutil.cpu_percent(1)
         return cpuinfo
 
     def interfaces(self):
-        '''gives interfaces present in pc'''
         return psutil.net_if_addrs().keys()
 
     def battery_percent(self):
-        '''gives percentage'''
         return psutil.sensors_battery().percent
 
     def net_connections(self):
-        '''gives addresses connected'''
         conns = {}
         for i in psutil.net_connections('inet4'):
             if i.status != None:
@@ -56,30 +52,13 @@ class commands:
         cpu = self.cpu_percent()
         return {'ram':ram,'cpu':cpu}
 
+    def poweroff(self):
+        os.system("shutdown /s /t 1")
+        return 'shutting down'
 
-
-
-'''
-cpu usage
-
-network interfaces
-
-ips connected
-
-list processes
-
-browsing history
-
-kill process
-
-all should return dictionaries
-
-'''
-# x=commands()
-# print('Ram:',x.ram())
-# print('CPU',x.cpu_percent())
-# print('Interface',x.interfaces())
-# print('battery',x.battery_percent())
-# print(x.net_connections())
-# print(x.running_process())
-# print(x.bhistory())
+    def restart(self):
+        os.system("shutdown /r /t 1")
+        return 'restart'
+    def logout(self):
+        os.system("shutdown -l")
+        return 'logged out'

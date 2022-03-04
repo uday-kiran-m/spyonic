@@ -1,16 +1,15 @@
 from mod import client
 
-ip = input('Enter server IP: ')
-user = input("Enter username: ")
-passwd = input("Enter password: ")
+ip = input('Enter Server IP: ')
+user = input("Enter Username: ")
+passwd = input("Enter Password: ")
 cli = client(ip)
 if not cli.is_installed():
     ch = cli.register(user,passwd)
     if ch == True:
-        print('Registered successfully')
+        print('Registered Successfully')
     else:
         print(ch)
-    # cli.start()
 else:
     x = cli.login(user,passwd)
     if x == True:
