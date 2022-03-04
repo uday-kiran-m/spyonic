@@ -77,16 +77,19 @@ class client:
         print('init conn')
         try:
             if self.installed:
-                self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                self.server.connect((self.ip,self.port))
-                data = self.server.recv(1024).decode()
-                if data == 'namex':
-                    self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
-                    data = pickle.loads(self.server.recv(2048))
-                    if data['id'] != None:
-                        return True
-                    else:
-                        return data['error']
+                try:
+                    self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                    self.server.connect((self.ip,self.port))
+                    data = self.server.recv(1024).decode()
+                    if data == 'namex':
+                        self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
+                        data = pickle.loads(self.server.recv(2048))
+                        if data['id'] != None:
+                            return True
+                        else:
+                            return data['error']
+                except Exception as e:
+                    return e
             else:
                 # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)#
                 # self.server.connect((self.ip,self.instport)) 

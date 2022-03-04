@@ -41,104 +41,131 @@ def loggedin():
                 else:
                     data[i]['status'] = 'Online'
                 cont.append(i)
-                for j in data[i]:
-                    cont.append(data[i][j])
-                tb.add_row(cont)
-            print(tb)
-            print()
-            print()
-            print('click enter to continue')
-            input()
+                if len(data) != 0:
+                    for j in data[i]:
+                        cont.append(data[i][j])
+                    tb.add_row(cont)
+                    print(tb)
+                    print()
+                    print()
+                    print('click enter to continue')
+                    input()
+                else:
+                    print('No devices found')
+                    input()
         elif ch == 2:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            print("Systems Available")
-            # print('Sno\t\tID\t\tName')
-            tb = PrettyTable()
-            tb.field_names = ['Sno','ID','Name']
-            h = 1
-            for i in cli:
-                if cli[i]['status'] == 1:
-                    tb.add_row([h,i,cli[i]['name']])
-                    clients[h] = i
-            print(tb)
-            print()
-            print()
+            if len(cli) != 0:
+                print("Systems Available")
+                # print('Sno\t\tID\t\tName')
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients) != 0:
+                    print(tb)
+                    print()
+                    print()
 
-            id = int(input("Enter the serial NO: "))
-            data = adm.sender(clients[id],'sendclient','status')
-            os.system('cls')
-            tb = PrettyTable()
-            print('System Status')
-            tb.field_names = ['CPU %','RAM Total','RAM %']
-            # print('Cpu %\t\tRam Total\t\tRam%')
-            tb.add_row([data['cpu'],data['ram']['total'],data['ram']['percent']])
-            print(tb)
-            print()
-            print()
-            print('click enter to continue')
-            input()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','status')
+                    os.system('cls')
+                    tb = PrettyTable()
+                    print('System Status')
+                    tb.field_names = ['CPU %','RAM Total','RAM %']
+                    # print('Cpu %\t\tRam Total\t\tRam%')
+                    tb.add_row([data['cpu'],data['ram']['total'],data['ram']['percent']])
+                    print(tb)
+                    print()
+                    print()
+                    print('click enter to continue')
+                    input()
+                else:
+                    print("No devices Online")
+                    input()
+            else:
+                print('No devices found')
+                input()
         elif ch == 3:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            tb = PrettyTable()
-            tb.field_names = ['Sno','ID','Name']
-            print('Systems Available')
-            h = 1
-            for i in cli:
-                if cli[i]['status'] == 1:
-                    tb.add_row([h,i,cli[i]['name']])
-                    clients[h] = i
-            print(tb)
-            print()
-            print()
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                print('Systems Available')
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients) != 0:
+                    print(tb)
+                    print()
+                    print()
 
-            id = int(input("Enter the serial NO: "))
-            data = adm.sender(clients[id],'sendclient','history')
-            # print('Date\t\tUrl')
-            tb = PrettyTable()
-            tb.field_names = ['Date','URL']
-            print('Browser History')
-            for i in data:
-                tb.add_row([i,data[i]])
-            print(tb)
-            print()
-            print()
-            print('Click enter to continue')
-            input()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','history')
+                    # print('Date\t\tUrl')
+                    tb = PrettyTable()
+                    tb.field_names = ['Date','URL']
+                    print('Browser History')
+                    for i in data:
+                        tb.add_row([i,data[i]])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click enter to continue')
+                    input()
+                else:
+                    print("No devices online")
+                    input()
+            else:
+                print('No devices Found')
+                input()
         elif ch == 4:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            tb = PrettyTable()
-            tb.field_names = ['Sno','ID','Name']
-            h = 1
-            for i in cli:
-                if cli[i]['status'] == 1:
-                    tb.add_row([h,i,cli[i]['name']])
-                    clients[h] = i
-            print(tb)
-            print()
-            print()
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
 
-            id = int(input("Enter the serial NO: "))
-            data = adm.sender(clients[id],'sendclient','listprocess')
-            # print('PID\t\tName\t\tStatus')
-            tb = PrettyTable()
-            tb.field_names = ['PID','Name','Status']
-            print('Syster Processes')
-            for i in data:
-                tb.add_row([i,data[i][0],data[i][1]])
-            print(tb)
-            print()
-            print()
-            print('Click enter to continue')
-            input()
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','listprocess')
+                    # print('PID\t\tName\t\tStatus')
+                    tb = PrettyTable()
+                    tb.field_names = ['PID','Name','Status']
+                    print('Syster Processes')
+                    for i in data:
+                        tb.add_row([i,data[i][0],data[i][1]])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click enter to continue')
+                    input()
+                else:
+                    print('No devices online')
+                    input()
+            else:
+                print('NO devices found')
         elif ch == 5:
             go = False
             os.remove(os.path.join(os.path.dirname(__file__),'data.dat'))
