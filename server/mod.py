@@ -94,6 +94,7 @@ class server:
                     else:
                         ev.set()
             except:
+                print('hmm')
                 ev.set()
         else:
             self.change_client_status(id,0)
@@ -111,7 +112,9 @@ class server:
                     print(data)
                 if type(data) == dict:
                         if data['command'] == 'sendclient':
+                            print(self.clients)
                             if data['id'] in self.clients:
+                                
                                 cli = self.clients[data['id']]
                                 print('Transmitting Data')
                                 cli.sendall(pickle.dumps({'command':data['data']}))
@@ -162,7 +165,6 @@ class server:
                         passwd = self.execdb(f"select password from spyonic.admins where email = '{data['email']}'")
                         print(passwd,data)
                         if passwd != []:
-                            print(passwd)
                             if passwd[0][0] == data['password']:
                                 id = self.execdb(f"select id from spyonic.admins where email = '{data['email']}'")[0][0]
                                 cli.send(pickle.dumps({'id':id,'error':None}))
@@ -213,10 +215,11 @@ class server:
                             cli.send(pickle.dumps({'id':data['id'],'error':None}))
                             self.change_client_status(data['id'],1)
                             print(f"Client connected\nIP:{addr},email:{data['email']}")
-                            self.clients[str(data['id'])] = cli
                             cli_ev = threading.Event()
                             t = threading.Thread(target=self.clilistener,args=(data['id'],cli,cli_ev),daemon=True)
                             t.start()
+                            self.clients[str(data['id'])] = cli
+                            cli = ''
                         else:
                             cli.send(pickle.dumps({'id':None,'error':'Not Logged In'}))
                             cli.close() 
@@ -228,12 +231,14 @@ class server:
     def start(self):
         print('Starting Server')
         self.setupserv()
+        self.execdb('update spyonic.clients set status=0')
+        self.execdb('update spyonic.admins set status=0')
         print('IP:',self.ip)
         print('PORT:',self.port)
         t = threading.Thread(target=self.accepter,daemon=True)
         t.start()
         while self.status:
-            time.sleep(10)
+            time.sleep(5)
 
     def stop(self):
         print('Stopping Server')

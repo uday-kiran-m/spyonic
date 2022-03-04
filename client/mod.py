@@ -14,6 +14,7 @@ class client:
         self.name = name
         self.commands = commands()
         self.loggedin = False
+        self.status = True
 
     def loadinfo(self):
         print('Loading Info')
@@ -69,7 +70,7 @@ class client:
                     self.server.connect((self.ip,self.port))
                     data = self.server.recv(1024).decode()
                     if data == 'namex':
-                        self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
+                        self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin,'email':self.email}))
                         data = pickle.loads(self.server.recv(2048))
                         if data['id'] != None:
                             return True
@@ -85,10 +86,15 @@ class client:
     def reciever(self,ev):
         print('Ready To Recieve Commands')
         while not ev.is_set():
-            data = self.server.recv(2048)
+            try:
+                data = self.server.recv(2048)
+            except Exception as e:
+                print(e)
             if data != b'':
                 print('Recieving Data')
                 data = pickle.loads(data)
+            else:
+                ev.set()
             if len(data) != 0:
                 if data['command']=='status':
                     print('Recived Command status')
@@ -117,6 +123,14 @@ class client:
                 else:
                     pass
             data = b''
+        else:
+            self.server.close()
+            if self.status:
+                status = self.setconn()
+                if status == True:
+                    self.ev = threading.Event()
+                    t = threading.Thread(target=self.reciever,args=(self.ev,),daemon=True)
+                    t.start()
 
     def start(self):
         print('Starting')
@@ -137,3 +151,4 @@ class client:
 
     def stop(self):
         self.ev.set()
+        self.status = False
