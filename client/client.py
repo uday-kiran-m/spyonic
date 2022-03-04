@@ -7,7 +7,11 @@ ip = input('Enter server IP:')
 # ip = '25.41.20.120'
 cli = client(ip)
 if not cli.is_installed():
-    cli.register(email,'0987654321')
+    ch = cli.register(email,'0987654321')
+    if ch == True:
+        print('Registered successfully')
+    else:
+        print(ch)
     # cli.start()
 else:
     x = cli.login(email,'0987654321')
