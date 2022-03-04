@@ -56,24 +56,56 @@ def status():
             data[i]['status'] = 'Online'
     data = json.dumps(data)
     print(data)
+    adm.stop()
     return data
-# if adm.is_installed():
-    # eel.start('html/index.html',jinja_templates = 'html')
-    # adm.login()
-    # adm.start()
-    # comma = input('Enter command')
-    # print('command')
-    # data = adm.sender(None,'status')
-    # print('hmm')
-    # for i in data:
-        # print(data[i]['status'] )
-        # if data[i]['status'] == 1:
-            # print('hm')
-            # print(adm.sender(i,'sendclient','listprocess'))
 
-# else:
-    # adm.login(email,'123')
-    # adm.start()
-    # eel.start('html/home.html',jinja_templates = 'html',mode=None)
+
+@eel.expose
+def bhist():
+    print('getting history')
+    adm.login()
+    adm.start()
+    clients = adm.sender(None,'status')
+    data = {}
+    for i in clients:
+        if clients[i]['status'] == 1:
+            print(i)
+            his = adm.sender(i,'sendclient','history')
+            data[i] = his
+    data = json.dumps(data)
+    print(data)
+    adm.stop()
+    return data
+
+
+@eel.expose
+def lp():
+    adm.login()
+    adm.start()
+    clients = adm.sender(None,'status')
+    data = {}
+    for i in clients:
+        if clients[i]['status'] == 1:
+            his = adm.sender(i,'sendclient','listprocess')
+            data[i] = his
+    data = json.dumps(data)
+    print(data)
+    adm.stop()
+    return data
+
+@eel.expose
+def st():
+    adm.login()
+    adm.start()
+    clients = adm.sender(None,'status')
+    data = {}
+    for i in clients:
+        if clients[i]['status'] == 1:
+            his = adm.sender(i,'sendclient','status')
+            data[i] = his
+    data = json.dumps(data)
+    print(data)
+    # adm.stop()
+    return data
 
 eel.start('html/home.html',jinja_templates = 'html')

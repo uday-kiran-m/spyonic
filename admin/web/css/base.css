@@ -9,6 +9,7 @@ body{
     padding: 0px;
     display: flex;
     flex-direction: column;
+    background-color: darkgray;
 }
 header{
     background-color:rgba(33,33,33,1);
@@ -84,6 +85,7 @@ header{
     box-shadow: 2px 2px 2px 0px rgba(33,33,33,1);
     vertical-align: middle;
     padding: 6px 0px 0px 0px;
+    background-color: #f2f2f2;
 }
 #content-grid{
     display:grid;
@@ -105,8 +107,8 @@ footer{
     vertical-align: middle;
 }
 .content{
-    background-color: #73b3cfaf;
-    padding: 20%;
+    background-color: white;
+    padding: 10%;
     margin: 3px;
     text-align: center;
 }

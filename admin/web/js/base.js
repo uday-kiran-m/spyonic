@@ -41,3 +41,13 @@ async function getstatus(){
 }
 
 window.onload = setTimeout(getstatus(),3000)
+
+async function hist(){
+    let data =JSON.parse(await eel.bhist()())
+    console.log(data)
+}
+
+async function lp(){
+    let data =JSON.parse(await eel.lp()())
+    console.log(data)
+}
