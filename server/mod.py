@@ -231,7 +231,7 @@ class server:
                             x = self.execdb(f"select * from spyonic.clients where id = '{id}'")# checking if there are any rows with the same id
                         y = self.execdb(f"select id from spyonic.admins where email='{data['email']}'")
                         print('client trying to register')
-                        print(x,y)
+                        # print(x,y)
                         # print(data)
                         if y != []:
                             y = y[0]
