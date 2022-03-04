@@ -85,7 +85,7 @@ class client:
     def reciever(self,ev):
         print('Ready To Recieve Commands')
         while not ev.is_set():
-            data = self.server.recv(8000)
+            data = self.server.recv(2048)
             if data != b'':
                 print('Recieving Data')
                 data = pickle.loads(data)
