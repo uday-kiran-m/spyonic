@@ -76,4 +76,4 @@ def status():
     # adm.start()
     # eel.start('html/home.html',jinja_templates = 'html',mode=None)
 
-eel.start('html/home.html',jinja_templates = 'html',mode=None)
+eel.start('html/home.html',jinja_templates = 'html')
