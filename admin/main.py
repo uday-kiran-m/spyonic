@@ -23,7 +23,7 @@ def loggedin():
         print("7. Poweroff Client")
         print("8. Reboot Client")
         print("9. Logout Client")
-        print('10. Logout')
+        print('10. Logout From This Program')
         print("11. Exit")
         ch = int(input("Enter your choice: "))
         if ch == 1:
@@ -33,31 +33,38 @@ def loggedin():
             print('Systems Available')
             tb = PrettyTable()
             tb.field_names = ['ID','Name','Status','OS','Last Online']
-            for i in data:
-                cont = []
-                if data[i]['status'] == 0:
-                    data[i]['status'] = 'Offline'
+            if data != None:
+                for i in data:
+                    cont = []
+                    if data[i]['status'] == 0:
+                        data[i]['status'] = 'Offline'
+                    else:
+                        data[i]['status'] = 'Online'
+                    cont.append(i)
+                    if data != None:
+                        for j in data[i]:
+                            cont.append(data[i][j])
+                        tb.add_row(cont)
+                        print(tb)
+                        print()
+                        print()
+                        print('Click Enter To Continue')
+                        input()
+                    else:
+                        print('No Devices Found')
+                        input()
                 else:
-                    data[i]['status'] = 'Online'
-                cont.append(i)
-                if len(data) != 0:
-                    for j in data[i]:
-                        cont.append(data[i][j])
-                    tb.add_row(cont)
-                    print(tb)
-                    print()
-                    print()
-                    print('Click Enter To Continue')
+                    print('No Devices Available')
                     input()
-                else:
-                    print('No Devices Found')
-                    input()
+            else:
+                print('No Devices Available')
+                input()
         elif ch == 2:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 print("Systems Available")
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
@@ -66,6 +73,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients) != 0:
                     print(tb)
                     print()
@@ -93,7 +101,7 @@ def loggedin():
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 print('Systems Available')
@@ -102,6 +110,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients) != 0:
                     print(tb)
                     print()
@@ -129,7 +138,7 @@ def loggedin():
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -137,6 +146,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -158,12 +168,13 @@ def loggedin():
                     input()
             else:
                 print('NO Devices Found')
+                input()
         elif ch == 5:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -171,6 +182,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -191,6 +203,7 @@ def loggedin():
                     input()
             else:
                 print('NO Devices Found')
+                input()
                     
                     
         elif ch == 6:
@@ -198,7 +211,7 @@ def loggedin():
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -206,6 +219,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -227,12 +241,13 @@ def loggedin():
                     input()
             else:
                 print('NO Devices Found')
+                input()
         elif ch == 7:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -240,6 +255,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -257,12 +273,13 @@ def loggedin():
                     input()
             else:
                 print('NO Devices Found')
+                input()
         elif ch == 8:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -270,6 +287,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -287,12 +305,13 @@ def loggedin():
                     input()
             else:
                 print('NO devices found')
+                input()
         elif ch == 9:
             os.system('cls')
             adm.start()
             cli = adm.sender(None,'status')
             clients = {}
-            if len(cli) != 0:
+            if cli != None:
                 tb = PrettyTable()
                 tb.field_names = ['Sno','ID','Name']
                 h = 1
@@ -300,6 +319,7 @@ def loggedin():
                     if cli[i]['status'] == 1:
                         tb.add_row([h,i,cli[i]['name']])
                         clients[h] = i
+                        h+=1
                 if len(clients)!=0:
                     print(tb)
                     print()
@@ -316,11 +336,12 @@ def loggedin():
                     input()
             else:
                 print('NO devices found')
-        elif ch == 10:
+                input()
+        elif ch == 11:
             print('Exiting')
             go = False
             break
-        elif ch == 11:
+        elif ch == 10:
             go = False
             os.remove(os.path.join(os.path.dirname(__file__),'data.dat'))
             print('Logged Out')
