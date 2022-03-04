@@ -13,10 +13,10 @@ class admin:
         self.passwd = None
 
     def loadinfo(self):
-        print('loading info')
+        # print('loading info')
         try:
             # print(os.path.join(sys.argv[0].strip()+'data.dat'))
-            print(os.path.join(os.path.dirname(__file__),'data.dat'))
+            # print(os.path.join(os.path.dirname(__file__),'data.dat'))
             with open(os.path.join(os.path.dirname(__file__),'data.dat'),'rb') as f:
                 data = pickle.load(f)
                 self.id = data['id']
@@ -81,7 +81,7 @@ class admin:
                 print('error')
        
     def setconn(self):
-        print('init conn')
+        # print('init conn')
         try:
             if self.installed:
                 self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -98,19 +98,19 @@ class admin:
             return False
 
     def sender(self,id,command,data=None):
-        print('sending')
+        # print('sending')
         self.server.send(pickle.dumps({'id':id,'command':command,'data':data}))
         data = b''
         while len(data) == 0:
             data = self.server.recv(8000)
         # print(data)
         data = pickle.loads(data)
-        print(data)
+        # print(data)
         if len(data) != 0:
             return data
 
     def start(self):
-        print('Starting ')
+        # print('Starting ')
         self.loadinfo()
         if self.installed:
             status = self.setconn
