@@ -48,14 +48,15 @@ def loggedin():
                     else:
                         print('No Devices Found')
                         input()
-                    print(tb)
-                    print()
-                    print()
-                    print('Click Enter To Continue')
-                    input()
                 else:
                     print('No Devices Available')
                     input()
+                print(tb)
+                print()
+                print()
+                print('Click Enter To Continue')
+                input()
+                
             else:
                 print('No Devices Available')
                 input()
