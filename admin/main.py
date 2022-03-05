@@ -353,7 +353,7 @@ def reg():
     go = True
     while go:
         os.system('cls')
-        print('\t\t\t\tSpyonic\t\t\t\t')
+        print('Spyonic'.center(150))
         print()
         print()
         print('1.Register')
