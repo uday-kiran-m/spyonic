@@ -48,9 +48,6 @@ def loggedin():
                     else:
                         print('No Devices Found')
                         input()
-                else:
-                    print('No Devices Available')
-                    input()
                 print(tb)
                 print()
                 print()
