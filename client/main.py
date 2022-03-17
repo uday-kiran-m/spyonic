@@ -12,6 +12,10 @@ if not cli.is_installed():
     ch = cli.register(user,passwd)
     if ch == True:
         print('Registered Successfully')
+        print('Restart The Program')
+        print()
+        print('Click Enter To Continue')
+        input()
     else:
         print(ch)
 else:
